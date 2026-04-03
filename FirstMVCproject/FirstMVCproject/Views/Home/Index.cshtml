@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Welcome to the Home Page!</h1>
+
+<p>
+    <a href="/Home/FirstAction">Go to First Action</a> |
+    <a href="/Home/GotoProduct">Go to Product</a> |
+    <a href="/Employee/Index">Update Employee</a>
+</p>
+
+<hr />
+
+@* Call the partial view here *@
+@Html.Partial("~/Views/Home/Partial/HomeForm.cshtml")
