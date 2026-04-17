@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<<<<<<< HEAD
+
     <title>@ViewData["Title"] - GlobalTrust</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -18,7 +18,6 @@
                 height: 45px;
             }
 
-            /* ACTIVE LINK */
             .nav-link.active {
                 color: #0d6efd !important;
                 font-weight: bold;
@@ -28,7 +27,6 @@
                 color: #0d6efd !important;
             }
 
-            /* FOOTER */
             footer {
                 font-size: 14px;
             }
@@ -40,8 +38,6 @@
 
                     footer a:hover {
                         color: #0d6efd !important;
-                        padding-left: 5px;
-                        transition: 0.2s;
                     }
     </style>
 </head>
@@ -53,7 +49,7 @@
         <div class="container">
 
             <!-- LOGO -->
-            <a class="navbar-brand d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
                 <img src="~/image/image_Logo.jpeg" class="rounded-circle me-2" />
                 <span class="fw-bold">GlobalTrust</span>
             </a>
@@ -70,48 +66,30 @@
 
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
-                               asp-controller="Home" asp-action="Index">
-                            Home
-                        </a>
+                           asp-controller="Home" asp-action="Index">Home</a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Services" ? "active" : "")"
-                               asp-controller="Home" asp-action="Services">
-                            Services
-                        </a>
+                           asp-controller="Home" asp-action="Services">Services</a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Privacy" ? "active" : "")"
-                               asp-controller="Home" asp-action="Privacy">
-                            Privacy
-                        </a>
+                           asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
 
-                    <!-- ✅ CONTACT ADDED HERE -->
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Contact" ? "active" : "")"
-                               asp-controller="Home" asp-action="Contact">
-                            Contact
-                        </a>
+                           asp-controller="Home" asp-action="Contact">Contact</a>
                     </li>
 
                 </ul>
 
                 <!-- BUTTONS -->
-                <div class="d-flex flex-column flex-lg-row gap-2">
-
-                    <a class="btn btn-outline-primary rounded-pill px-3"
-                           asp-controller="Home" asp-action="Index">
-                        Register
-                    </a>
-
-                    <a class="btn btn-primary rounded-pill px-3"
-                           asp-controller="Home" asp-action="Index">
-                        Login
-                    </a>
-
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-primary rounded-pill px-3">Register</a>
+                    <a class="btn btn-primary rounded-pill px-3">Login</a>
                 </div>
 
             </div>
@@ -125,49 +103,29 @@
 
     <!-- ================= FOOTER ================= -->
     <footer class="bg-dark text-white mt-5 pt-5 pb-3">
-
         <div class="container">
 
             <div class="row text-center text-md-start">
 
-                <!-- BRAND -->
                 <div class="col-md-4 mb-3">
-                    <h5 class="fw-bold">GlobalTrust</h5>
-                    <p class="text-muted">
-                        Secure digital banking for fast and safe global transactions.
-                    </p>
+                    <h5>GlobalTrust</h5>
+                    <p class="text-muted">Secure digital banking for global transactions.</p>
                 </div>
 
-                <!-- LINKS -->
                 <div class="col-md-4 mb-3">
                     <h6>Quick Links</h6>
-
                     <ul class="list-unstyled">
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Services">Services</a>
-                        </li>
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Contact">Contact</a>
-                        </li>
-
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Home" asp-action="Services">Services</a></li>
+                        <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                     </ul>
                 </div>
 
-                <!-- CONTACT -->
                 <div class="col-md-4 mb-3">
                     <h6>Contact</h6>
-                    <p class="text-muted mb-1">Cape Town, South Africa</p>
-                    <p class="text-muted mb-1">support@globaltrust.com</p>
+                    <p class="text-muted">Cape Town, South Africa</p>
+                    <p class="text-muted">support@globaltrust.com</p>
                     <p class="text-muted">+27 12 345 6789</p>
                 </div>
 
@@ -180,7 +138,6 @@
             </div>
 
         </div>
-
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -189,64 +146,3 @@
 
 </body>
 </html>
-=======
-    <title>@ViewData["Title"] - PaymentSystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PaymentSystem.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white box-shadow mb-3" style="position:fixed; width:100%; z-index:1000000;">
-            <div class="container-fluid">
-                <div>
-                    <img src="~/image/image_Logo.jpeg" class="nav-link rounded-circle px-3 py-2" style="width:180px;height:100px;" />
-                </div>
-                <!--<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PaymentSystem</a>-->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Conctact us</a>
-                        </li>
-                    </ul>
-
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-white bg-primary rounded-pill px-3 py-2" asp-area="" asp-controller="Home" asp-action="Index">Rrgister</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white bg-primary rounded-pill px-3 py-2" asp-area="" asp-controller="Home" asp-action="Privacy">Login</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - PaymentSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
->>>>>>> a298f210f7d589ca76a3a74262b11ebc40b0c253
