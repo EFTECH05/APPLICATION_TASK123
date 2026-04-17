@@ -37,8 +37,11 @@ body {
 }
 li::marker {
     color: #0d6efd;
+<<<<<<< HEAD
 }
 footer a:hover {
     color: #0d6efd !important;
     transition: 0.3s;
+=======
+>>>>>>> a298f210f7d589ca76a3a74262b11ebc40b0c253
 }
