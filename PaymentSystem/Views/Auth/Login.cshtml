@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef3ff, #f8f9fa);
+    }
+
+    .login-card {
+        max-width: 420px;
+        margin: 80px auto;
+        padding: 30px;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .btn {
+        border-radius: 30px;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="login-card">
+
+    <h3 class="text-center mb-3">Welcome Back 👋</h3>
+    <p class="text-center text-muted">Login to your GlobalTrust account</p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger text-center">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form method="post">
+
+        <div class="mb-3">
+            <label>Username</label>
+            <input name="username" class="form-control" placeholder="Enter username" />
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input name="password" type="password" class="form-control" placeholder="Enter password" />
+        </div>
+
+        <button class="btn btn-primary w-100">
+            Login
+        </button>
+
+    </form>
+
+</div>

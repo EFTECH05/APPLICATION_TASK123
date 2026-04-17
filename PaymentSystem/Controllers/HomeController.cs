@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace PaymentSystem.Controllers
 {
-    // This controller handles main pages (Home, Privacy, Services, Contact)
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,37 +13,43 @@ namespace PaymentSystem.Controllers
             _logger = logger;
         }
 
-        // ================= HOME PAGE =================
-        // URL: /Home/Index
+        // ================= HOME =================
         public IActionResult Index()
         {
             return View();
         }
 
-        // ================= PRIVACY PAGE =================
-        // URL: /Home/Privacy
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        // ================= SERVICES PAGE =================
-        // URL: /Home/Services
+        // ================= SERVICES =================
         public IActionResult Services()
         {
             return View();
         }
 
-        // ================= CONTACT PAGE =================
-        // URL: /Home/Contact
-        // This makes your "Contact" navbar link work
-        public IActionResult Contact()
+        // ================= PRIVACY =================
+        public IActionResult Privacy()
         {
-            return View(); // Loads Views/Home/Contact.cshtml
+            return View();
         }
 
-        // ================= ERROR PAGE =================
-        // Used when something goes wrong
+        // ================= CONTACT =================
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        // ================= REDIRECT TO LOGIN (IMPORTANT ADDITION) =================
+        public IActionResult Login()
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        // ================= REDIRECT TO DASHBOARD (OPTIONAL BUT USEFUL) =================
+        public IActionResult Dashboard()
+        {
+            return RedirectToAction("Index", "UserDashboard");
+        }
+
+        // ================= ERROR =================
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
