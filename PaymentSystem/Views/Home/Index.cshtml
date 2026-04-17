@@ -1,0 +1,325 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+
+    /* ================= BACKGROUND ================= */
+    body {
+        background: linear-gradient(135deg, #f8f9fa, #eef3ff);
+        overflow-x: hidden;
+    }
+
+    /* ================= GLASS STYLE ================= */
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 20px;
+    }
+
+    /* ================= ANIMATIONS ================= */
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
+    }
+
+    .slide-left {
+        opacity: 0;
+        transform: translateX(-50px);
+        animation: slideLeft 1s ease forwards;
+    }
+
+    .slide-right {
+        opacity: 0;
+        transform: translateX(50px);
+        animation: slideRight 1s ease forwards;
+    }
+
+    .fade-in,
+    .slide-left,
+    .slide-right {
+        animation-play-state: paused;
+    }
+
+    @@keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideLeft {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes slideRight {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* ================= BUTTON ================= */
+    .btn {
+        transition: 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .highlight {
+        color: #0d6efd;
+    }
+</style>
+
+<!-- ================= HERO ================= -->
+<div class="container mt-5">
+
+    <div class="row align-items-center g-4">
+
+        <div class="col-12 col-lg-6 slide-left">
+            <div class="glass">
+                <h1>Transform</h1>
+                <h2>the way you</h2>
+                <h2>handle <span class="highlight">money</span></h2>
+                <p>Smart, secure and modern banking with GlobalTrust.</p>
+
+                <button class="btn btn-primary rounded-pill px-4">
+                    Get Started
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6 slide-right">
+            <img src="~/image/image_1.jpeg" class="img-fluid rounded" />
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= REGISTER FORM ================= -->
+<div class="container mt-5">
+
+    <div class="row align-items-center g-4">
+
+        <div class="col-12 col-lg-6 slide-left">
+            <img src="~/image/image_1.jpeg" class="img-fluid rounded" />
+        </div>
+
+        <div class="col-12 col-lg-6 slide-right">
+
+            <div class="glass">
+
+                <h4>Create Account</h4>
+
+                <form>
+
+                    <input class="form-control mb-3" placeholder="Full Name" />
+                    <input class="form-control mb-3" placeholder="ID Number" />
+                    <input class="form-control mb-3" placeholder="Account Number" />
+                    <input type="password" class="form-control mb-3" placeholder="Password" />
+
+                    <button class="btn btn-primary w-100 rounded-pill">
+                        Register
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= STATS ================= -->
+<div class="container mt-5 text-center fade-in">
+
+    <h2 class="mb-4">Trusted by thousands</h2>
+
+    <div class="row g-4">
+
+        <div class="col-6 col-md-3 glass">
+            <h3 class="highlight">50K+</h3>
+            <p>Users</p>
+        </div>
+
+        <div class="col-6 col-md-3 glass">
+            <h3 class="highlight">120+</h3>
+            <p>Countries</p>
+        </div>
+
+        <div class="col-6 col-md-3 glass">
+            <h3 class="highlight">99.9%</h3>
+            <p>Uptime</p>
+        </div>
+
+        <div class="col-6 col-md-3 glass">
+            <h3 class="highlight">24/7</h3>
+            <p>Support</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= SERVICES ================= -->
+<div class="container mt-5 text-center fade-in">
+
+    <h2 class="mb-4">Our Services</h2>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-md-4 glass">
+            <h5>💸 Transfers</h5>
+            <p>Send money instantly worldwide.</p>
+        </div>
+
+        <div class="col-12 col-md-4 glass">
+            <h5>🏦 Accounts</h5>
+            <p>Open digital banking accounts easily.</p>
+        </div>
+
+        <div class="col-12 col-md-4 glass">
+            <h5>📊 Analytics</h5>
+            <p>Track spending and savings.</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= SECURITY ================= -->
+<div class="container mt-5">
+
+    <div class="row align-items-center g-4">
+
+        <div class="col-12 col-lg-6 slide-left">
+            <div class="glass">
+                <h2 class="highlight">Bank-Level Security</h2>
+                <p>We protect your money with advanced encryption.</p>
+
+                <ul>
+                    <li>✔ Encryption protection</li>
+                    <li>✔ Fraud detection</li>
+                    <li>✔ Secure login</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6 slide-right">
+            <img src="~/image/image_3.jpeg" class="img-fluid rounded" />
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= GLOBAL TRANSFERS ================= -->
+<div class="container mt-5 text-center fade-in">
+
+    <div class="glass p-4">
+
+        <h2>Send Money Worldwide</h2>
+        <p>Fast international transfers with low fees.</p>
+
+        <div class="row mt-3">
+
+            <div class="col">🇿🇦 SA</div>
+            <div class="col">🇺🇸 USA</div>
+            <div class="col">🇬🇧 UK</div>
+            <div class="col">🇪🇺 EU</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= APP ================= -->
+<div class="container mt-5">
+
+    <div class="row align-items-center g-4">
+
+        <div class="col-12 col-lg-4 fade-in">
+            <img src="~/image/image_4.jpeg" class="img-fluid rounded" />
+        </div>
+
+        <div class="col-12 col-lg-8 slide-right">
+
+            <div class="glass">
+                <h2 class="highlight">GlobalTrust App</h2>
+                <p>Bank anywhere, anytime.</p>
+
+                <button class="btn btn-dark me-2">App Store</button>
+                <button class="btn btn-success">Google Play</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= TESTIMONIALS ================= -->
+<div class="container mt-5 text-center fade-in">
+
+    <h2 class="mb-4">What users say</h2>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-md-4 glass">
+            "Amazing banking experience!"
+            <br><small>- John D</small>
+        </div>
+
+        <div class="col-12 col-md-4 glass">
+            "Fast and secure transfers."
+            <br><small>- Sarah K</small>
+        </div>
+
+        <div class="col-12 col-md-4 glass">
+            "Best fintech UI ever."
+            <br><small>- Michael B</small>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= CTA ================= -->
+<div class="container mt-5 text-center fade-in">
+
+    <div class="glass p-5">
+
+        <h2>Ready to start?</h2>
+        <p>Join GlobalTrust today and manage your money smarter.</p>
+
+        <button class="btn btn-primary rounded-pill px-5">
+            Create Account
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= ANIMATION SCRIPT ================= -->
+<script>
+    const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    }, { threshold: 0.2 });
+
+    elements.forEach(el => observer.observe(el));
+</script>
