@@ -2,72 +2,26 @@
     ViewData["Title"] = "Home Page";
 }
 
- 
 <style>
-
-    /* ================= BACKGROUND ================= */
     body {
         background: linear-gradient(135deg, #f8f9fa, #eef3ff);
         overflow-x: hidden;
     }
 
-    /* ================= GLASS STYLE ================= */
     .glass {
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.75);
         backdrop-filter: blur(12px);
         border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        padding: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
-    /* ================= ANIMATIONS ================= */
-    .fade-in {
-        opacity: 0;
-        animation: fadeIn 1s ease forwards;
+    .highlight {
+        color: #0d6efd;
     }
 
-    .slide-left {
-        opacity: 0;
-        transform: translateX(-50px);
-        animation: slideLeft 1s ease forwards;
-    }
-
-    .slide-right {
-        opacity: 0;
-        transform: translateX(50px);
-        animation: slideRight 1s ease forwards;
-    }
-
-    .fade-in,
-    .slide-left,
-    .slide-right {
-        animation-play-state: paused;
-    }
-
-    @@keyframes fadeIn {
-        to {
-            opacity: 1;
-        }
-    }
-
-    @@keyframes slideLeft {
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @@keyframes slideRight {
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* ================= BUTTON ================= */
     .btn {
-        transition: 0.3s ease;
+        transition: 0.2s;
     }
 
         .btn:hover {
@@ -77,96 +31,56 @@
     img {
         max-width: 100%;
         height: auto;
-    }
-
-    .highlight {
-        color: #0d6efd;
+        border-radius: 12px;
     }
 </style>
 
 <!-- ================= HERO ================= -->
 <div class="container mt-5">
-
     <div class="row align-items-center g-4">
 
-        <div class="col-12 col-lg-6 slide-left">
+        <div class="col-lg-6">
             <div class="glass">
-                <h1>Transform</h1>
-                <h2>the way you</h2>
-                <h2>handle <span class="highlight">money</span></h2>
-                <p>Smart, secure and modern banking with GlobalTrust.</p>
+                <h1>Modern Banking Made Simple</h1>
+                <p>
+                    GlobalTrust is your secure digital banking platform for fast,
+                    safe and reliable money management.
+                </p>
 
-                <button class="btn btn-primary rounded-pill px-4">
-                    Get Started
-                </button>
+                <a href="#transfer" class="btn btn-primary rounded-pill px-4">
+                    Make a Transfer
+                </a>
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 slide-right">
-            <img src="~/image/image_1.jpeg" class="img-fluid rounded" />
-        </div>
-
-    </div>
-</div>
-
-<!-- ================= REGISTER FORM ================= -->
-<div class="container mt-5">
-
-    <div class="row align-items-center g-4">
-
-        <div class="col-12 col-lg-6 slide-left">
-            <img src="~/image/image_1.jpeg" class="img-fluid rounded" />
-        </div>
-
-        <div class="col-12 col-lg-6 slide-right">
-
-            <div class="glass">
-
-                <h4>Create Account</h4>
-
-                <form>
-
-                    <input class="form-control mb-3" placeholder="Full Name" />
-                    <input class="form-control mb-3" placeholder="ID Number" />
-                    <input class="form-control mb-3" placeholder="Account Number" />
-                    <input type="password" class="form-control mb-3" placeholder="Password" />
-
-                    <button class="btn btn-primary w-100 rounded-pill">
-                        Register
-                    </button>
-
-                </form>
-
-            </div>
-
+        <div class="col-lg-6">
+            <img src="~/image/image_1.jpeg" alt="hero image" />
         </div>
 
     </div>
 </div>
 
 <!-- ================= STATS ================= -->
-<div class="container mt-5 text-center fade-in">
-
-    <h2 class="mb-4">Trusted by thousands</h2>
+<div class="container mt-5 text-center">
 
     <div class="row g-4">
 
-        <div class="col-6 col-md-3 glass">
+        <div class="col-md-3 glass">
             <h3 class="highlight">50K+</h3>
-            <p>Users</p>
+            <p>Active Users</p>
         </div>
 
-        <div class="col-6 col-md-3 glass">
+        <div class="col-md-3 glass">
             <h3 class="highlight">120+</h3>
-            <p>Countries</p>
+            <p>Supported Countries</p>
         </div>
 
-        <div class="col-6 col-md-3 glass">
+        <div class="col-md-3 glass">
             <h3 class="highlight">99.9%</h3>
-            <p>Uptime</p>
+            <p>System Uptime</p>
         </div>
 
-        <div class="col-6 col-md-3 glass">
+        <div class="col-md-3 glass">
             <h3 class="highlight">24/7</h3>
             <p>Support</p>
         </div>
@@ -175,25 +89,31 @@
 </div>
 
 <!-- ================= SERVICES ================= -->
-<div class="container mt-5 text-center fade-in">
+<div class="container mt-5 text-center">
 
-    <h2 class="mb-4">Our Services</h2>
+    <h2 class="mb-4">Our Banking Services</h2>
 
     <div class="row g-4">
 
-        <div class="col-12 col-md-4 glass">
-            <h5>💸 Transfers</h5>
-            <p>Send money instantly worldwide.</p>
+        <div class="col-md-4">
+            <div class="glass">
+                <h5>💸 Money Transfers</h5>
+                <p>Send money instantly across countries.</p>
+            </div>
         </div>
 
-        <div class="col-12 col-md-4 glass">
-            <h5>🏦 Accounts</h5>
-            <p>Open digital banking accounts easily.</p>
+        <div class="col-md-4">
+            <div class="glass">
+                <h5>🏦 Digital Accounts</h5>
+                <p>Open and manage accounts online.</p>
+            </div>
         </div>
 
-        <div class="col-12 col-md-4 glass">
-            <h5>📊 Analytics</h5>
-            <p>Track spending and savings.</p>
+        <div class="col-md-4">
+            <div class="glass">
+                <h5>🔒 Secure Payments</h5>
+                <p>Encrypted and fraud-protected transactions.</p>
+            </div>
         </div>
 
     </div>
@@ -204,248 +124,109 @@
 
     <div class="row align-items-center g-4">
 
-        <div class="col-12 col-lg-6 slide-left">
+        <div class="col-lg-6">
             <div class="glass">
                 <h2 class="highlight">Bank-Level Security</h2>
-                <p>We protect your money with advanced encryption.</p>
+                <p>
+                    Your money is protected using advanced encryption and fraud detection systems.
+                </p>
 
                 <ul>
-                    <li>✔ Encryption protection</li>
-                    <li>✔ Fraud detection</li>
-                    <li>✔ Secure login</li>
+                    <li>End-to-end encryption</li>
+                    <li>AI fraud monitoring</li>
+                    <li>Secure login verification</li>
                 </ul>
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 slide-right">
-            <img src="~/image/image_3.jpeg" class="img-fluid rounded" />
+        <div class="col-lg-6">
+            <img src="~/image/image_3.jpeg" alt="security image" />
         </div>
 
     </div>
 </div>
 
-<!-- ================= GLOBAL TRANSFERS ================= -->
-<div class="container mt-5 text-center fade-in">
+<!-- ================= BANK TRANSFER SECTION ================= -->
+<div id="transfer" class="container mt-5">
+
+    <div class="glass">
+
+        <h2 class="text-center highlight">Make a Bank Transfer</h2>
+
+        <p class="text-center text-muted">
+            Transfer money securely to local and international accounts in seconds.
+        </p>
+
+        <form>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <input class="form-control" placeholder="Sender Full Name" />
+                </div>
+
+                <div class="col-md-6">
+                    <input class="form-control" placeholder="Recipient Full Name" />
+                </div>
+
+                <div class="col-md-6">
+                    <input class="form-control" placeholder="Recipient Bank Account" />
+                </div>
+
+                <div class="col-md-6">
+                    <input class="form-control" placeholder="Bank Name (e.g. FNB, Capitec)" />
+                </div>
+
+                <div class="col-md-6">
+                    <input class="form-control" placeholder="Amount (ZAR)" />
+                </div>
+
+                <div class="col-md-6">
+                    <select class="form-control">
+                        <option>Local Transfer (South Africa)</option>
+                        <option>International Transfer</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="alert alert-info mt-4">
+                🔒 Transfers are protected with multi-layer security and verification.
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary rounded-pill px-5">
+                    Send Money
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- ================= APP DOWNLOAD ================= -->
+<div class="container mt-5 text-center">
 
     <div class="glass p-4">
 
-        <h2>Send Money Worldwide</h2>
-        <p>Fast international transfers with low fees.</p>
+        <h2 class="highlight">Download the GlobalTrust App</h2>
+        <p>Bank anywhere, anytime from your smartphone.</p>
 
-        <div class="row mt-3">
+        <div class="d-flex justify-content-center gap-3 mt-3">
 
-            <div class="col">🇿🇦 SA</div>
-            <div class="col">🇺🇸 USA</div>
-            <div class="col">🇬🇧 UK</div>
-            <div class="col">🇪🇺 EU</div>
+            <button class="btn btn-dark rounded-pill px-4 d-flex align-items-center gap-2">
+                <i class="bi bi-apple"></i>
+                App Store
+            </button>
+
+            <button class="btn btn-success rounded-pill px-4 d-flex align-items-center gap-2">
+                <i class="bi bi-google-play"></i>
+                Google Play
+            </button>
 
         </div>
 
     </div>
 
 </div>
-
-<!-- ================= APP ================= -->
-<div class="container mt-5">
-
-    <div class="row align-items-center g-4">
-
-        <div class="col-12 col-lg-4 fade-in">
-            <img src="~/image/image_4.jpeg" class="img-fluid rounded" />
-        </div>
-
-        <div class="col-12 col-lg-8 slide-right">
-
-            <div class="glass">
-                <h2 class="highlight">GlobalTrust App</h2>
-                <p>Bank anywhere, anytime.</p>
-
-                <button class="btn btn-dark me-2">App Store</button>
-                <button class="btn btn-success">Google Play</button>
-            </div>
-
-        </div>
-
-    </div>
-</div>
-
-<!-- ================= TESTIMONIALS ================= -->
-<div class="container mt-5 text-center fade-in">
-
-    <h2 class="mb-4">What users say</h2>
-
-    <div class="row g-4">
-
-        <div class="col-12 col-md-4 glass">
-            "Amazing banking experience!"
-            <br><small>- John D</small>
-        </div>
-
-        <div class="col-12 col-md-4 glass">
-            "Fast and secure transfers."
-            <br><small>- Sarah K</small>
-        </div>
-
-        <div class="col-12 col-md-4 glass">
-            "Best fintech UI ever."
-            <br><small>- Michael B</small>
-        </div>
-
-    </div>
-</div>
-
-<!-- ================= CTA ================= -->
-<div class="container mt-5 text-center fade-in">
-
-    <div class="glass p-5">
-
-        <h2>Ready to start?</h2>
-        <p>Join GlobalTrust today and manage your money smarter.</p>
-
-        <button class="btn btn-primary rounded-pill px-5">
-            Create Account
-        </button>
-
-    </div>
-
-</div>
-
-<!-- ================= ANIMATION SCRIPT ================= -->
-<script>
-    const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    }, { threshold: 0.2 });
-
-    elements.forEach(el => observer.observe(el));
-</script>
-
-<div class="inline-flex" style="margin-top:150px;">
-    <div class="text-start">
-        <h1 class="display-6">Transform</h1>
-        <p class="display-6">the way you</p>
-        <p class="display-6">handle <span class="blue">money </span> </p>
-    </div>
-</div>
-
-<div class="d-flex align-items-start">
-
-    <!-- Left side -->
-    <div>
-        <img src="~/image/image_1.jpeg" style="width:460px;height:550px;" />
-    </div>
-
-    <!-- Right side (pushed far right) -->
-    <div class="ms-auto">
-        <div class="card shadow-sm" style="width:490px;">
-            <div class="card-body">
-                <!-- your form here -->
-                <form method="post" action="/home/registerVenue" enctype="multipart/form-data">
-                    <!-- Venue Name -->
-                    <div class="mb-3">
-                        <label for="VenueName" class="form-label blue">Full Name</label>
-                        <input id="VenueName" name="VenueName" type="text" class="form-control text_rm-border" placeholder="Please Enter your Full Name" required />
-                    </div>
-
-                    <!-- Location -->
-                    <div class="mb-3">
-                        <label for="Location" class="form-label blue">ID Number</label>
-                        <input id="Location" name="Location" type="text" class="form-control text_rm-border" placeholder="Please Enter your ID Number" required />
-                    </div>
-                    <!-- Capacity -->
-                    <div class="mb-3">
-                        <label for="Capacity" class="form-label blue">Account Number</label>
-                        <input id="Location" name="Location" type="text" class="form-control text_rm-border" placeholder="Please Enter your Account Number" required />
-                    </div>
-                    <!-- Image Upload -->
-                    <div class="mb-3">
-                        <label for="ImageFile" class="form-label blue">Password </label>
-                        <input id="Location" name="Location" type="text" class="form-control text_rm-border" placeholder="Please Enter your Password" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label blue">Don't have an account?' </label>
-                    </div>
-                    <div class="justify-content-center">
-                        <div class="d-flex justify-content-center">
-                            <a class="nav-link text-white text-center bg-primary rounded-pill px-5 py-2">Register</a>
-                        </div>
-                    </div>
-                    <!-- Buttons -->
-                    @*<div class="d-flex justify-content-between">
-                        <input type="reset" class="btn btn-secondary" value="Reset" />
-                        <input type="submit" class="btn btn-primary" value="Submit" />
-                    </div>*@
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="d-flex align-items-start" style="margin-top:20px;">
-    <div class="justify-content-center" style="width:450px;">
-        <div class="d-flex justify-content-center">
-            <a class="nav-link text-white text-center bg-primary rounded-pill px-5 py-2">Get Started</a>
-        </div>
-        <div style="margin-top:150px;">
-            <p class="display-4 blue">
-                Why choose us?
-            </p>
-        </div>
-        <div style="margin-top:80px;">
-            <ul>
-                <li>
-                    Link up top 5 free pockets to your Account.
-                </li>
-                <li>
-                    Enjoy the lowest banking fees and incredible value.
-                </li>
-                <li>
-                    Easy-to-earn Audacious Rwards points
-                </li>
-            </ul>
-        </div>
-        <div class="me-auto" style="width:300px;">
-            <div class="text-center" style="margin-top:180px;">
-               <h5>Secure your financial</h5>
-                <h5>future with us!</h5>
-                <p class="text-center">Let our app handle your transfer while</p>
-                <p class="text-center">you focus on things that matter the most. </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="ms-auto">
-        <div class="card shadow-lg" style="margin-top:60px;">
-            <img src="~/image/image_3.jpeg" style="width:760px;height:710px;" />
-        </div>
-    </div>
-</div>
-
-<div class="d-flex align-items-start" style="margin-top:20px;">
-    <div class="card shadow-lg" style="margin-top:60px;">
-        <img src="~/image/image_4.jpeg" style="width:400px;height:430px;" />
-    </div>
-    <div class="ms-auto">
-        <div class="d-flex justify-content-start" style="width:765px;margin-top:80px;">
-            <p class="display-4 blue">
-                Download the GlobalTrust
-            </p>
-        </div>
-        <div class="row-cols-1">
-            <p class="display-4 blue">
-                bank app
-            </p>
-        </div>
-        <div class="row-cols-1">
-            <p class="row">your banking made easier</p>
-            <p class="row"> it's like having your own bank in your pocket.</p>
-            <p class="row">Access your accounts24/7, wherever you are. it's secure and super convenient</p>
-        </div>
-    </div>
-</div>
-
-
