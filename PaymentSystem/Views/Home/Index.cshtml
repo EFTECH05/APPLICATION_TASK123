@@ -8,39 +8,62 @@
         overflow-x: hidden;
     }
 
+    /* ================= GLASS ================= */
     .glass {
         background: rgba(255, 255, 255, 0.75);
         backdrop-filter: blur(12px);
         border-radius: 16px;
         padding: 25px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transition: all 0.6s ease;
     }
 
+    /* ================= ANIMATION CLASSES ================= */
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s ease;
+    }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* ================= HIGHLIGHT ================= */
     .highlight {
         color: #0d6efd;
     }
 
+    /* ================= BUTTON ================= */
     .btn {
-        transition: 0.2s;
+        transition: all 0.3s ease;
     }
 
         .btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
+    /* ================= IMAGE ================= */
     img {
         max-width: 100%;
         height: auto;
         border-radius: 12px;
+        transition: transform 0.5s ease;
     }
+
+        img:hover {
+            transform: scale(1.02);
+        }
 </style>
 
 <!-- ================= HERO ================= -->
-<div class="container mt-5">
+<div class="container mt-5 reveal">
     <div class="row align-items-center g-4">
 
         <div class="col-lg-6">
-            <div class="glass">
+            <div class="glass reveal">
                 <h1>Modern Banking Made Simple</h1>
                 <p>
                     GlobalTrust is your secure digital banking platform for fast,
@@ -53,7 +76,7 @@
             </div>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-6 reveal">
             <img src="~/image/image_1.jpeg" alt="hero image" />
         </div>
 
@@ -61,26 +84,26 @@
 </div>
 
 <!-- ================= STATS ================= -->
-<div class="container mt-5 text-center">
+<div class="container mt-5 text-center reveal">
 
     <div class="row g-4">
 
-        <div class="col-md-3 glass">
+        <div class="col-md-3 glass reveal">
             <h3 class="highlight">50K+</h3>
             <p>Active Users</p>
         </div>
 
-        <div class="col-md-3 glass">
+        <div class="col-md-3 glass reveal">
             <h3 class="highlight">120+</h3>
             <p>Supported Countries</p>
         </div>
 
-        <div class="col-md-3 glass">
+        <div class="col-md-3 glass reveal">
             <h3 class="highlight">99.9%</h3>
             <p>System Uptime</p>
         </div>
 
-        <div class="col-md-3 glass">
+        <div class="col-md-3 glass reveal">
             <h3 class="highlight">24/7</h3>
             <p>Support</p>
         </div>
@@ -89,27 +112,27 @@
 </div>
 
 <!-- ================= SERVICES ================= -->
-<div class="container mt-5 text-center">
+<div class="container mt-5 text-center reveal">
 
     <h2 class="mb-4">Our Banking Services</h2>
 
     <div class="row g-4">
 
-        <div class="col-md-4">
+        <div class="col-md-4 reveal">
             <div class="glass">
                 <h5>💸 Money Transfers</h5>
                 <p>Send money instantly across countries.</p>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 reveal">
             <div class="glass">
                 <h5>🏦 Digital Accounts</h5>
                 <p>Open and manage accounts online.</p>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 reveal">
             <div class="glass">
                 <h5>🔒 Secure Payments</h5>
                 <p>Encrypted and fraud-protected transactions.</p>
@@ -120,11 +143,11 @@
 </div>
 
 <!-- ================= SECURITY ================= -->
-<div class="container mt-5">
+<div class="container mt-5 reveal">
 
     <div class="row align-items-center g-4">
 
-        <div class="col-lg-6">
+        <div class="col-lg-6 reveal">
             <div class="glass">
                 <h2 class="highlight">Bank-Level Security</h2>
                 <p>
@@ -139,15 +162,15 @@
             </div>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-6 reveal">
             <img src="~/image/image_3.jpeg" alt="security image" />
         </div>
 
     </div>
 </div>
 
-<!-- ================= BANK TRANSFER SECTION ================= -->
-<div id="transfer" class="container mt-5">
+<!-- ================= BANK TRANSFER ================= -->
+<div id="transfer" class="container mt-5 reveal">
 
     <div class="glass">
 
@@ -206,7 +229,7 @@
 </div>
 
 <!-- ================= APP DOWNLOAD ================= -->
-<div class="container mt-5 text-center">
+<div class="container mt-5 text-center reveal">
 
     <div class="glass p-4">
 
@@ -230,3 +253,20 @@
     </div>
 
 </div>
+
+<!-- ================= ANIMATION SCRIPT ================= -->
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+
+    document.querySelectorAll(".reveal").forEach(el => {
+        observer.observe(el);
+    });
+</script>
