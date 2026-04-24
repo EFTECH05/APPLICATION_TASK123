@@ -1,0 +1,107 @@
+﻿@model List<PaymentSystem.Models.User>
+
+@{
+    ViewData["Title"] = "Users Management";
+}
+
+<h2>👥 Users Management</h2>
+
+<style>
+    .table-container {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .btn-round {
+        border-radius: 25px;
+        padding: 6px 14px;
+        font-size: 14px;
+    }
+</style>
+
+<!-- TOP ACTIONS -->
+<div class="mb-3">
+
+    <a class="btn btn-primary btn-round" asp-action="CreateUser">
+        ➕ Create User
+    </a>
+
+    <a class="btn btn-warning btn-round" asp-action="CreateAdmin">
+        🔐 Create Admin
+    </a>
+
+</div>
+
+<div class="table-container">
+
+    <table class="table table-striped align-middle">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+
+                    <td>
+                        @if (user.Role == "SuperAdmin")
+                        {
+                            <span class="badge bg-dark">Main Admin</span>
+                        }
+                        else if (user.Role == "Admin")
+                        {
+                            <span class="badge bg-danger">Admin</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">User</span>
+                        }
+                    </td>
+
+                    <td>
+
+                        <!-- ❌ NO ACTIONS FOR SUPERADMIN -->
+                        @if (user.Role != "SuperAdmin")
+                        {
+                            <a class="btn btn-warning btn-sm btn-round"
+                                   asp-action="RequestUpdate"
+                                   asp-route-id="@user.Id">
+                                ✏ Edit
+                            </a>
+
+                            <a class="btn btn-danger btn-sm btn-round"
+                                   asp-action="DeleteUser"
+                                   asp-route-id="@user.Id"
+                                   onclick="return confirm('Delete this user?')">
+                                🗑 Delete
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Protected Account</span>
+                        }
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

@@ -1,0 +1,35 @@
+﻿@model PaymentSystem.Models.User
+
+@{
+    ViewData["Title"] = "Request Update";
+}
+
+<h2>✏ Request Update</h2>
+
+<div class="card p-4 shadow-sm">
+
+    <form asp-action="RequestUpdate" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-warning">
+            Submit Update Request
+        </button>
+
+        <a asp-action="Users" class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>

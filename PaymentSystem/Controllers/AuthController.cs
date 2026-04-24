@@ -1,35 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PaymentSystem.Models;
 
 namespace PaymentSystem.Controllers
 {
     public class AuthController : Controller
     {
-        // ================= LOGIN =================
+        private readonly AppDbContext _context;
 
-        [HttpGet]
-        public IActionResult Login()
+        public AuthController(AppDbContext context)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Login(string username, string password)
-        {
-            // DEMO LOGIN (replace with DB later)
-            if (username == "admin" && password == "123")
-            {
-                // ✅ STORE USER SESSION
-                HttpContext.Session.SetString("User", username);
-
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            ViewBag.Error = "Invalid username or password";
-            return View();
+            _context = context;
         }
 
         // ================= REGISTER =================
-
         [HttpGet]
         public IActionResult Register()
         {
@@ -37,21 +20,71 @@ namespace PaymentSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string fullName, string username, string email, string password, string confirmPassword)
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(RegisterViewModel model)
         {
-            if (password != confirmPassword)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.Password != model.ConfirmPassword)
             {
                 ViewBag.Error = "Passwords do not match";
-                return View();
+                return View(model);
             }
 
-            // TODO: Save user to database later
+            var user = new User
+            {
+                Name = model.FullName,
+                Email = model.Email,
+                Password = model.Password,
+                Role = "User"
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
 
             return RedirectToAction("Login");
         }
 
-        // ================= LOGOUT =================
+        // ================= LOGIN =================
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(string username, string password)
+        {
+            var user = _context.Users
+                .FirstOrDefault(x =>
+                    (x.Email == username || x.Name == username)
+                    && x.Password == password);
+
+            if (user == null)
+            {
+                ViewBag.Error = "Invalid login details";
+                return View();
+            }
+
+            // ================= SESSION (FIXED) =================
+            HttpContext.Session.SetInt32("UserId", user.Id);
+            HttpContext.Session.SetString("User", user.Name);
+            HttpContext.Session.SetString("Role", user.Role);
+            HttpContext.Session.SetString("Email", user.Email);
+
+            // ================= ROLE REDIRECT =================
+            if (user.Role == "SuperAdmin")
+                return RedirectToAction("Index", "Admin");
+
+            if (user.Role == "Admin")
+                return RedirectToAction("Index", "Admin");
+
+            return RedirectToAction("Index", "UserDashboard");
+        }
+
+        // ================= LOGOUT =================
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

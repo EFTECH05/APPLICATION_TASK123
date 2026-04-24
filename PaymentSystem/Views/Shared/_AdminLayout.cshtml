@@ -1,0 +1,107 @@
+﻿@{
+    var user = Context.Session.GetString("User");
+    var role = Context.Session.GetString("Role");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+            body {
+                margin: 0;
+                font-family: 'Segoe UI', sans-serif;
+                background: #f4f6fb;
+            }
+
+            /* SIDEBAR */
+            .sidebar {
+                width: 240px;
+                height: 100vh;
+                background: #0d6efd;
+                position: fixed;
+                top: 0;
+                left: 0;
+                padding: 20px;
+                color: white;
+            }
+
+                .sidebar h3 {
+                    font-weight: 700;
+                    margin-bottom: 30px;
+                }
+
+                .sidebar a {
+                    display: block;
+                    color: white;
+                    text-decoration: none;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 8px;
+                    transition: 0.3s;
+                }
+
+                    .sidebar a:hover {
+                        background: rgba(255,255,255,0.2);
+                    }
+
+            /* TOP BAR */
+            .topbar {
+                margin-left: 240px;
+                background: white;
+                padding: 15px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            }
+
+            /* CONTENT */
+            .content {
+                margin-left: 240px;
+                padding: 20px;
+            }
+
+            .badge-role {
+                background: #0d6efd;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 20px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>🏦 Admin Panel</h3>
+
+        <a asp-controller="Admin" asp-action="Index">🏠 Dashboard</a>
+        <a asp-controller="Admin" asp-action="Users">👥 Users</a>
+        <a asp-controller="Admin" asp-action="CreateUser">➕ Create User</a>
+        <a asp-controller="Admin" asp-action="CreateAdmin">🔐 Create Admin</a>
+        <a asp-controller="Admin" asp-action="UpdateRequests">📩 Requests</a>
+        <a asp-controller="Auth" asp-action="Logout">🚪 Logout</a>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div>
+            Logged in as: <b>@user</b>
+        </div>
+
+        <span class="badge-role">@role</span>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="content">
+        @RenderBody()
+    </div>
+
+</body>
+</html>

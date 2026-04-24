@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    var role = Context.Session.GetString("Role");
+    var user = Context.Session.GetString("User");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -65,43 +72,71 @@
                 <ul class="navbar-nav me-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
-                           asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Services" ? "active" : "")"
-                           asp-controller="Home" asp-action="Services">Services</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Services">Services</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Privacy" ? "active" : "")"
-                           asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Contact" ? "active" : "")"
-                           asp-controller="Home" asp-action="Contact">Contact</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
                     </li>
+
+                    <!-- ================= USER DASHBOARD (ONLY USER) ================= -->
+                    @if (role == "User")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="UserDashboard" asp-action="Index">
+                                Dashboard
+                            </a>
+                        </li>
+                    }
+
+                    <!-- ================= ADMIN PANEL ================= -->
+                    @if (role == "Admin" || role == "SuperAdmin")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                Admin Panel
+                            </a>
+                        </li>
+                    }
 
                 </ul>
 
-                <!-- ================= BUTTONS (FIXED) ================= -->
+                <!-- ================= RIGHT SIDE ================= -->
                 <div class="d-flex gap-2">
 
-                    <!-- REGISTER -->
-                    <a class="btn btn-outline-primary rounded-pill px-3"
-                           asp-controller="Auth" asp-action="Register">
-                        <i class="bi bi-person-plus me-1"></i>
-                        Register
-                    </a>
+                    @if (string.IsNullOrEmpty(user))
+                    {
+                        <a class="btn btn-outline-primary rounded-pill px-3"
+                               asp-controller="Auth" asp-action="Register">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Register
+                        </a>
 
-                    <!-- LOGIN -->
-                    <a class="btn btn-primary rounded-pill px-3"
-                           asp-controller="Auth" asp-action="Login">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>
-                        Login
-                    </a>
+                        <a class="btn btn-primary rounded-pill px-3"
+                               asp-controller="Auth" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            Login
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="btn btn-light rounded-pill px-3">
+                            👤 @user (@role)
+                        </span>
+
+                        <a class="btn btn-danger rounded-pill px-3"
+                               asp-controller="Auth" asp-action="Logout">
+                            Logout
+                        </a>
+                    }
 
                 </div>
 

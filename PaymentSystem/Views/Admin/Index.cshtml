@@ -1,0 +1,223 @@
+﻿@model PaymentSystem.Models.DashboardViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Admin Dashboard";
+
+    var role = Context.Session.GetString("Role");
+    var user = Context.Session.GetString("User");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+            body {
+                background: linear-gradient(135deg, #eef2ff, #f8f9fa);
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+            /* ===== TOP BAR ===== */
+            .topbar {
+                background: white;
+                padding: 15px 25px;
+                border-radius: 16px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            .brand {
+                font-size: 22px;
+                font-weight: 700;
+                color: #0d6efd;
+            }
+
+            .user-box {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .badge-role {
+                background: linear-gradient(45deg, #0d6efd, #4f8cff);
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+            }
+
+            /* ===== CARDS ===== */
+            .card-box {
+                border-radius: 20px;
+                padding: 25px;
+                color: white;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                transition: all 0.3s ease;
+            }
+
+                .card-box:hover {
+                    transform: translateY(-6px) scale(1.02);
+                }
+
+            /* ===== SECTION ===== */
+            .section {
+                background: white;
+                padding: 25px;
+                border-radius: 18px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                margin-top: 20px;
+            }
+
+            /* ===== TABLE ===== */
+            table {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            /* ===== ACTION BUTTONS ===== */
+            .action-bar a {
+                margin-right: 10px;
+                margin-bottom: 10px;
+                border-radius: 30px;
+                padding: 10px 20px;
+                font-weight: 500;
+                transition: 0.3s ease;
+            }
+
+                .action-bar a:hover {
+                    transform: scale(1.05);
+                }
+
+            /* ===== GREETING ===== */
+            .welcome-box {
+                background: white;
+                padding: 20px;
+                border-radius: 16px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                margin-bottom: 20px;
+            }
+
+                .welcome-box h4 {
+                    margin: 0;
+                }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-3">
+
+        <!-- ===== TOP BAR ===== -->
+        <div class="topbar">
+            <div class="brand">
+                🏦 GlobalTrust Admin
+            </div>
+
+            <div class="user-box">
+                <span class="badge-role">@role</span>
+                <span>👤 @user</span>
+
+                <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger btn-sm">
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== WELCOME ===== -->
+        <div class="welcome-box">
+            <h4>Welcome back, <strong>@user</strong> 👋</h4>
+            <p class="text-muted">Here’s what’s happening in your system today.</p>
+        </div>
+
+        <!-- ===== SUPER ADMIN BUTTON ===== -->
+        @if (role == "SuperAdmin")
+        {
+            <div class="mb-3">
+                <a asp-action="UpdateRequests" class="btn btn-warning">
+                    📩 Pending Update Requests
+                </a>
+            </div>
+        }
+
+        <!-- ===== STATS ===== -->
+        <div class="row">
+
+            <div class="col-md-4 mb-3">
+                <div class="card-box bg-primary">
+                    <h6>Total Users</h6>
+                    <h2>@Model.TotalUsers</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card-box bg-success">
+                    <h6>Total Payments</h6>
+                    <h2>@Model.TotalPayments</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card-box bg-dark">
+                    <h6>Total Revenue</h6>
+                    <h2>$@Model.TotalRevenue</h2>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== USERS TABLE ===== -->
+        <div class="section">
+
+            <h4 class="fw-bold mb-3">Users Overview</h4>
+
+            <table class="table table-striped table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var userItem in Model.Users)
+                    {
+                        <tr>
+                            <td>@userItem.Id</td>
+                            <td>@userItem.Name</td>
+                            <td>@userItem.Email</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <div class="action-bar mt-4">
+
+            <a asp-action="Users" class="btn btn-primary">👥 Manage Users</a>
+
+            <a asp-action="Payments" class="btn btn-success">💳 View Payments</a>
+
+            <a asp-action="CreateUser" class="btn btn-outline-primary">➕ Add User</a>
+
+            <a asp-action="CreateAdmin" class="btn btn-outline-danger">🔐 Add Admin</a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

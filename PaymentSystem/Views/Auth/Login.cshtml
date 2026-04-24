@@ -4,57 +4,189 @@
 
 <style>
     body {
-        background: linear-gradient(135deg, #eef3ff, #f8f9fa);
+        background: linear-gradient(135deg, #0d6efd, #e9f2ff);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
     }
 
-    .login-card {
-        max-width: 420px;
-        margin: 80px auto;
-        padding: 30px;
-        border-radius: 16px;
+    .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .login-wrapper {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
         background: white;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        animation: fadeIn 0.6s ease-in-out;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
     }
 
-    .btn {
+    /* LEFT PANEL */
+    .left-panel {
+        flex: 1;
+        background: linear-gradient(135deg, #0d6efd, #003a99);
+        color: white;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .left-panel h1 {
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .left-panel p {
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        .left-panel ul {
+            margin-top: 20px;
+            padding-left: 18px;
+        }
+
+        .left-panel li {
+            margin-bottom: 8px;
+        }
+
+    .brand {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+        flex: 1;
+        padding: 50px;
+    }
+
+        .right-panel h3 {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+
+    .btn-primary {
         border-radius: 30px;
+        padding: 12px;
+        font-weight: 600;
+        transition: 0.3s;
     }
 
-    @@keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        .btn-primary:hover {
+            background-color: #0046b3;
+        }
+
+    .alert {
+        border-radius: 10px;
+    }
+
+    /* RESPONSIVE */
+    @@media (max-width: 768px) {
+        .login-wrapper {
+            flex-direction: column;
+        }
+
+        .left-panel {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .right-panel {
+            padding: 30px;
+        }
     }
 </style>
 
-<div class="login-card">
+<div class="page-wrapper">
 
-    <h3 class="text-center mb-3">Welcome Back 👋</h3>
-    <p class="text-center text-muted">Login to your GlobalTrust account</p>
+    <div class="login-wrapper">
 
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger text-center">
-            @ViewBag.Error
+        <!-- ================= LEFT ================= -->
+        <div class="left-panel">
+
+            <div class="brand">
+                💳 GlobalTrust Bank
+            </div>
+
+            <h1>Welcome Back</h1>
+
+            <p>
+                Login securely to access your banking dashboard, manage payments,
+                and track transactions in real time.
+            </p>
+
+            <ul>
+                <li>✔ Secure authentication</li>
+                <li>✔ Fast account access</li>
+                <li>✔ Encrypted transactions</li>
+            </ul>
+
         </div>
-    }
 
-    <form method="post">
+        <!-- ================= RIGHT ================= -->
+        <div class="right-panel">
 
-        <div class="mb-3">
-            <label>Username</label>
-            <input name="username" class="form-control" placeholder="Enter username" />
+            <h3>Login</h3>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <form asp-controller="Auth" asp-action="Login" method="post">
+
+                <div class="mb-3">
+                    <label>Username or Email</label>
+                    <input name="username" class="form-control" placeholder="Enter username or email" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input name="password" type="password" class="form-control" placeholder="Enter password" />
+                </div>
+
+                <button class="btn btn-primary w-100 mt-2">
+                    Login
+                </button>
+
+            </form>
+
+            <p class="text-center mt-3">
+                Don't have an account?
+                <a asp-controller="Auth" asp-action="Register">Create Account</a>
+            </p>
+
         </div>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Enter password" />
-        </div>
-
-        <button class="btn btn-primary w-100">
-            Login
-        </button>
-
-    </form>
+    </div>
 
 </div>
