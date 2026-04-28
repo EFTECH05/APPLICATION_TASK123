@@ -9,5 +9,7 @@ namespace PaymentSystem.Models
         public decimal TotalRevenue { get; set; }
 
         public List<User> Users { get; set; }
+        // ✅ ADD THIS
+        public UserGrowthViewModel UserGrowth { get; set; }
     }
 }

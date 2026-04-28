@@ -1,302 +1,186 @@
 ﻿@{
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
     ViewData["Title"] = "Dashboard";
+
+    // SAFE SESSION HANDLING
+    var userName = Context.Session.GetString("User");
+    var role = Context.Session.GetString("Role");
+
+    if (string.IsNullOrEmpty(userName)) userName = "Guest User";
+    if (string.IsNullOrEmpty(role)) role = "User";
 }
 
-<!-- ================= CHART LIBRARY ================= -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    /* ================= VIRTUAL CARD ================= */
+    body {
+    background: #f5f7fb;
+    margin: 0;
+    }
+
+    /* CARD */
     .bank-card {
     background: linear-gradient(135deg, #0d6efd, #0046b3);
     color: white;
     border-radius: 18px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
+    padding: 22px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    min-height: 180px;
-    }
-
-    .bank-card::after {
-    content: "";
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    }
-
-    .visa {
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
-    font-weight: bold;
-    letter-spacing: 2px;
     }
 
     .card-box {
     border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+    background: white;
+    padding: 18px;
     }
 
     .section-title {
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 10px;
     }
 
-    .chart-box {
-    height: 300px;
+    /* CHART */
+    canvas {
+    width: 100% !important;
+    height: auto !important;
     }
 
-    /* ================= CHAT SYSTEM ================= */
-    .chat-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #0d6efd;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 50px;
-    cursor: pointer;
-    z-index: 999;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-
-    .chat-box {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 300px;
-    background: white;
+    /* QUICK BUTTONS */
+    .quick-btn {
+    width: 100%;
     border-radius: 12px;
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 999;
+    padding: 10px;
+    font-weight: 600;
     }
 
-    .chat-header {
-    background: #0d6efd;
-    color: white;
-    padding: 10px;
+    /* TRANSACTIONS */
+    .item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    }
-
-    .chat-body {
-    height: 250px;
     padding: 10px;
-    overflow-y: auto;
-    font-size: 14px;
+    border-bottom: 1px solid #eee;
     }
 
-    .msg {
-    padding: 8px;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    max-width: 80%;
+    /* RESPONSIVE FIX */
+    @@media (max-width: 768px) {
+
+    .row {
+    flex-direction: column;
     }
 
-    .support {
-    background: #f1f1f1;
-    align-self: flex-start;
+    .bank-card {
+    margin-bottom: 15px;
     }
 
-    .user {
-    background: #0d6efd;
-    color: white;
-    margin-left: auto;
-    text-align: right;
+    .card-box {
+    margin-bottom: 15px;
     }
-
-    .chat-footer {
-    display: flex;
-    border-top: 1px solid #ddd;
-    }
-
-    .chat-footer input {
-    flex: 1;
-    border: none;
-    padding: 10px;
-    outline: none;
-    }
-
-    .chat-footer button {
-    background: #0d6efd;
-    color: white;
-    border: none;
-    padding: 10px 15px;
     }
 </style>
 
 <div class="container">
 
-    <!-- ================= TOP SECTION ================= -->
+    <!-- TOP -->
     <div class="row g-4">
 
-        <!-- VISA CARD -->
+        <!-- USER CARD -->
         <div class="col-md-6">
-
             <div class="bank-card">
 
                 <small>GlobalTrust Bank</small>
-                <h5 class="mt-1">Franklin Smith</h5>
 
-                <div class="mt-3">
-                    <img src="https://img.icons8.com/color/48/visa.png" />
-                </div>
+                <h5>Welcome, @userName 👋</h5>
+                <small>Role: @role</small>
 
                 <h3 class="mt-3">**** **** **** 4821</h3>
-
-                <small>Expiry: 09/28</small>
-
-                <div class="visa">VISA</div>
+                <small>Account Active</small>
 
             </div>
-
         </div>
 
         <!-- BALANCE -->
         <div class="col-md-6">
-
-            <div class="card card-box p-4">
+            <div class="card-box">
 
                 <h6 class="text-muted">Available Balance</h6>
                 <h2 class="text-primary">R 12,500.75</h2>
                 <p class="text-success">✔ Active Account</p>
 
-                <hr />
+                <div class="row g-2 mt-2">
 
-                <button class="btn btn-primary w-100 mb-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#sendMoney">
-                    💸 Send Money
-                </button>
+                    <div class="col-4">
+                        <button class="btn btn-primary quick-btn">💸 Send</button>
+                    </div>
 
-                <button class="btn btn-outline-dark w-100"
-                        onclick="window.print()">
-                    🧾 Print Monthly Statement
-                </button>
+                    <div class="col-4">
+                        <button class="btn btn-success quick-btn">📥 Request</button>
+                    </div>
+
+                    <div class="col-4">
+                        <button class="btn btn-dark quick-btn">💳 Pay</button>
+                    </div>
+
+                </div>
 
             </div>
-
         </div>
 
     </div>
 
-    <!-- ================= CHART ================= -->
-    <div class="card card-box mt-4 p-4">
+    <!-- TRANSFER -->
+    <div class="card-box mt-4">
 
-        <h5 class="section-title">Monthly Transfers Overview</h5>
+        <h5 class="section-title">💸 Transfer Money</h5>
 
-        <div class="chart-box">
-            <canvas id="transferChart"></canvas>
+        <input class="form-control mb-2" placeholder="Recipient Name" />
+        <input class="form-control mb-2" placeholder="Account Number" />
+        <input class="form-control mb-2" placeholder="Bank Name" />
+        <input class="form-control mb-2" placeholder="Amount (ZAR)" />
+
+        <button class="btn btn-primary w-100">
+            Confirm Transfer
+        </button>
+
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="card-box mt-4">
+
+        <h5 class="section-title">📊 Recent Transactions</h5>
+
+        <div class="item">
+            <span>Salary Deposit</span>
+            <span class="text-success">+ R8,000</span>
+        </div>
+
+        <div class="item">
+            <span>Electricity Bill</span>
+            <span class="text-danger">- R350</span>
+        </div>
+
+        <div class="item">
+            <span>Online Purchase</span>
+            <span class="text-danger">- R1,200</span>
         </div>
 
     </div>
 
-    <!-- ================= TRANSACTIONS ================= -->
-    <div class="card card-box mt-4 p-3">
-
-        <h5 class="section-title">Recent Transactions</h5>
-
-        <ul class="list-group list-group-flush">
-
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Sent to John Doe</span>
-                <span class="text-danger">- R500</span>
-            </li>
-
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Salary Deposit</span>
-                <span class="text-success">+ R8,000</span>
-            </li>
-
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Electricity Bill</span>
-                <span class="text-danger">- R350</span>
-            </li>
-
-        </ul>
-
+    <!-- CHART -->
+    <div class="card-box mt-4">
+        <h5 class="section-title">📈 Transfers Overview</h5>
+        <canvas id="transferChart"></canvas>
     </div>
 
 </div>
 
-<!-- ================= SEND MONEY MODAL ================= -->
-<div class="modal fade" id="sendMoney" tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5>Send Money</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-
-                <input class="form-control mb-2" placeholder="Recipient Name" />
-                <input class="form-control mb-2" placeholder="Account Number" />
-                <input class="form-control mb-2" placeholder="Amount (ZAR)" />
-
-                <button class="btn btn-primary w-100">
-                    Confirm Transfer
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ================= LIVE CHAT BUTTON ================= -->
-<button class="chat-btn" onclick="toggleChat()">
-    💬 Live Support
-</button>
-
-<div id="chatBox" class="chat-box shadow">
-
-    <div class="chat-header">
-        <span>Customer Support</span>
-        <button class="btn-close btn-close-white" onclick="toggleChat()"></button>
-    </div>
-
-    <div class="chat-body" id="chatBody">
-        <div class="msg support">
-            Hello 👋 How can we help you today?
-        </div>
-    </div>
-
-    <div class="chat-footer">
-        <input id="chatInput" type="text" placeholder="Type message..." />
-        <button onclick="sendMsg()">Send</button>
-    </div>
-
-</div>
-
-<!-- ================= SCRIPTS ================= -->
 <script>
-    // ===== CHART =====
-    const ctx = document.getElementById('transferChart');
-
-    new Chart(ctx, {
+    new Chart(document.getElementById('transferChart'), {
     type: 'line',
     data: {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Jan','Feb','Mar','Apr','May','Jun'],
     datasets: [{
-    label: 'Transfers (ZAR)',
-    data: [1200, 1900, 3000, 2500, 4000, 3200],
+    label: 'Transfers',
+    data: [1200,1900,3000,2500,4000,3200],
     borderColor: '#0d6efd',
     backgroundColor: 'rgba(13,110,253,0.1)',
     fill: true,
@@ -304,27 +188,4 @@
     }]
     }
     });
-
-    // ===== CHAT =====
-    function toggleChat() {
-    var box = document.getElementById("chatBox");
-    box.style.display = box.style.display === "flex" ? "none" : "flex";
-    }
-
-    function sendMsg() {
-    var input = document.getElementById("chatInput");
-    var msg = input.value;
-
-    if (msg.trim() === "") return;
-
-    var chatBody = document.getElementById("chatBody");
-
-    var div = document.createElement("div");
-    div.className = "msg user";
-    div.innerText = msg;
-
-    chatBody.appendChild(div);
-    input.value = "";
-    chatBody.scrollTop = chatBody.scrollHeight;
-    }
 </script>

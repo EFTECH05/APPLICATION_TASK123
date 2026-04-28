@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ================= SERVICES =================
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
 // ================= DATABASE =================
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -21,11 +22,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// ================= AUTHORIZATION (IMPORTANT) =================
 builder.Services.AddAuthorization();
-
-// Needed for session access in controllers/views
-builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -41,10 +38,33 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 🔥 MUST BE IN THIS ORDER
+// 🔐 SESSION MUST BE BEFORE SECURITY CHECKS
 app.UseSession();
 
 app.UseAuthorization();
+
+
+// ================= 🔥 GLOBAL ADMIN BLOCK (IMPORTANT FIX) =================
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value;
+
+    // Block ALL admin access if not authenticated
+    if (path != null && path.StartsWith("/Admin"))
+    {
+        var user = context.Session.GetString("User");
+        var role = context.Session.GetString("Role");
+
+        if (string.IsNullOrEmpty(user) ||
+            (role != "Admin" && role != "SuperAdmin"))
+        {
+            context.Response.StatusCode = 404; // hide admin completely
+            return;
+        }
+    }
+
+    await next();
+});
 
 // ================= ROUTES =================
 app.MapControllerRoute(
@@ -52,14 +72,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-// ================= SEED SUPER ADMIN (VERY IMPORTANT) =================
+// ================= SEED SUPER ADMIN =================
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!context.Users.Any(u => u.Role == "SuperAdmin"))
+    if (!db.Users.Any(u => u.Role == "SuperAdmin"))
     {
-        context.Users.Add(new User
+        db.Users.Add(new User
         {
             Name = "Main Admin",
             Email = "admin@globaltrust.com",
@@ -67,10 +87,11 @@ using (var scope = app.Services.CreateScope())
             Role = "SuperAdmin",
             Status = "Approved",
             IsApproved = true,
-            CreatedBy = "System"
+            CreatedBy = "System",
+            CreatedAt = DateTime.Now
         });
 
-        context.SaveChanges();
+        db.SaveChanges();
     }
 }
 

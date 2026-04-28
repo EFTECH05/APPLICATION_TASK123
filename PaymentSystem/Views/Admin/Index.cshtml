@@ -15,173 +15,233 @@
     <title>Admin Dashboard</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-            body {
-                background: linear-gradient(135deg, #eef2ff, #f8f9fa);
-                font-family: 'Segoe UI', sans-serif;
-            }
+        :root {
+        --bg: #f5f8ff;
+        --card: #ffffff;
+        --text: #000;
+        --primary: #0d6efd;
+        --border: #e5e5e5;
+        }
 
-            /* ===== TOP BAR ===== */
-            .topbar {
-                background: white;
-                padding: 15px 25px;
-                border-radius: 16px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 25px;
-            }
+        body.dark {
+        --bg: #0b0f1a;
+        --card: #121826;
+        --text: #fff;
+        --border: #1f2a44;
+        }
 
-            .brand {
-                font-size: 22px;
-                font-weight: 700;
-                color: #0d6efd;
-            }
+        body {
+        margin: 0;
+        font-family: 'Segoe UI';
+        background: var(--bg);
+        color: var(--text);
+        }
 
-            .user-box {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
+        /* SIDEBAR */
+        .sidebar {
+        width: 240px;
+        height: 100vh;
+        position: fixed;
+        background: var(--card);
+        border-right: 1px solid var(--border);
+        padding: 15px;
+        }
 
-            .badge-role {
-                background: linear-gradient(45deg, #0d6efd, #4f8cff);
-                color: white;
-                padding: 6px 12px;
-                border-radius: 20px;
-                font-size: 12px;
-            }
+        .logo {
+        text-align: center;
+        margin-bottom: 20px;
+        }
 
-            /* ===== CARDS ===== */
-            .card-box {
-                border-radius: 20px;
-                padding: 25px;
-                color: white;
-                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-                transition: all 0.3s ease;
-            }
+        .logo img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        }
 
-                .card-box:hover {
-                    transform: translateY(-6px) scale(1.02);
-                }
+        .menu a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: var(--text);
+        border-radius: 8px;
+        margin-bottom: 5px;
+        }
 
-            /* ===== SECTION ===== */
-            .section {
-                background: white;
-                padding: 25px;
-                border-radius: 18px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-                margin-top: 20px;
-            }
+        .menu a:hover {
+        background: var(--primary);
+        color: #fff;
+        }
 
-            /* ===== TABLE ===== */
-            table {
-                border-radius: 12px;
-                overflow: hidden;
-            }
+        /* MAIN */
+        .main {
+        margin-left: 240px;
+        padding: 20px;
+        }
 
-            /* ===== ACTION BUTTONS ===== */
-            .action-bar a {
-                margin-right: 10px;
-                margin-bottom: 10px;
-                border-radius: 30px;
-                padding: 10px 20px;
-                font-weight: 500;
-                transition: 0.3s ease;
-            }
+        /* TOPBAR */
+        .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card);
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        }
 
-                .action-bar a:hover {
-                    transform: scale(1.05);
-                }
+        #search {
+        width: 280px;
+        border-radius: 20px;
+        }
 
-            /* ===== GREETING ===== */
-            .welcome-box {
-                background: white;
-                padding: 20px;
-                border-radius: 16px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-                margin-bottom: 20px;
-            }
+        /* CARDS */
+        .card-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 18px;
+        border-radius: 12px;
+        }
 
-                .welcome-box h4 {
-                    margin: 0;
-                }
+        /* CHART */
+        .chart-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 15px;
+        }
 
+        canvas {
+        max-height: 180px !important;
+        }
+
+        /* ICON */
+        .icon {
+        font-size: 26px;
+        color: var(--primary);
+        }
+
+        /* BUTTONS */
+        .action-bar a {
+        margin-right: 10px;
+        border-radius: 25px;
+        padding: 10px 18px;
+        }
+
+        /* NOTIFICATION */
+        .notif {
+        position: relative;
+        cursor: pointer;
+        }
+
+        .dot {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 8px;
+        height: 8px;
+        background: red;
+        border-radius: 50%;
+        }
+
+        /* HIGHLIGHT ROW */
+        .highlight {
+        background: rgba(13,110,253,0.08) !important;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container mt-3">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
-        <!-- ===== TOP BAR ===== -->
+        <div class="logo">
+            <img src="~/image/image_Logo.jpeg" />
+            <h6>GlobalTrust</h6>
+        </div>
+
+        <div class="menu">
+            <a href="#">🏠 OVERVIEW</a>
+            <a asp-action="Users">👥 Users</a>
+            <a asp-action="CreateUser">➕ Create User</a>
+            <a asp-action="CreateAdmin">🔐 Create Admin</a>
+            <a asp-action="UpdateRequests">📩 Requests</a>
+
+            <hr />
+
+            <a href="#">⚙️ Settings</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">🔗 Linked Accounts</a>
+
+            <hr />
+
+            <a asp-controller="Auth" asp-action="Logout">🚪 Logout</a>
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOPBAR -->
         <div class="topbar">
-            <div class="brand">
-                🏦 GlobalTrust Admin
+
+            <input id="search" class="form-control" placeholder="Search users..." />
+
+            <div style="display:flex;align-items:center;gap:10px;">
+
+                <div class="notif">
+                    🔔
+                    <div class="dot"></div>
+                </div>
+
+                <button onclick="toggleDark()" class="btn btn-outline-primary btn-sm">🌙</button>
+
+                <span class="badge bg-primary">@role</span>
             </div>
 
-            <div class="user-box">
-                <span class="badge-role">@role</span>
-                <span>👤 @user</span>
-
-                <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger btn-sm">
-                    Logout
-                </a>
-            </div>
         </div>
 
-        <!-- ===== WELCOME ===== -->
-        <div class="welcome-box">
-            <h4>Welcome back, <strong>@user</strong> 👋</h4>
-            <p class="text-muted">Here’s what’s happening in your system today.</p>
-        </div>
+        <!-- STATS -->
+        <div class="row mt-3">
 
-        <!-- ===== SUPER ADMIN BUTTON ===== -->
-        @if (role == "SuperAdmin")
-        {
-            <div class="mb-3">
-                <a asp-action="UpdateRequests" class="btn btn-warning">
-                    📩 Pending Update Requests
-                </a>
-            </div>
-        }
-
-        <!-- ===== STATS ===== -->
-        <div class="row">
-
-            <div class="col-md-4 mb-3">
-                <div class="card-box bg-primary">
-                    <h6>Total Users</h6>
-                    <h2>@Model.TotalUsers</h2>
+            <div class="col-md-4">
+                <div class="card-box">
+                    👥 Users <h3>@Model.TotalUsers</h3>
                 </div>
             </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="card-box bg-success">
-                    <h6>Total Payments</h6>
-                    <h2>@Model.TotalPayments</h2>
+            <div class="col-md-4">
+                <div class="card-box">
+                    💳 Payments <h3>@Model.TotalPayments</h3>
                 </div>
             </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="card-box bg-dark">
-                    <h6>Total Revenue</h6>
-                    <h2>$@Model.TotalRevenue</h2>
+            <div class="col-md-4">
+                <div class="card-box">
+                    📊 Revenue <h3>$@Model.TotalRevenue</h3>
                 </div>
             </div>
 
         </div>
 
-        <!-- ===== USERS TABLE ===== -->
-        <div class="section">
+        <!-- CHART -->
+        <div class="chart-box">
+            <h6>User Growth</h6>
+            <canvas id="chart"></canvas>
+        </div>
 
-            <h4 class="fw-bold mb-3">Users Overview</h4>
+        <!-- USERS TABLE -->
+        <div class="card-box mt-3">
 
-            <table class="table table-striped table-hover">
+            <h6>Users</h6>
 
-                <thead class="table-dark">
+            <table class="table table-striped">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
@@ -189,35 +249,76 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    @foreach (var userItem in Model.Users)
+                <tbody id="userTable">
+                    @foreach (var u in Model.Users)
                     {
                         <tr>
-                            <td>@userItem.Id</td>
-                            <td>@userItem.Name</td>
-                            <td>@userItem.Email</td>
+                            <td>@u.Id</td>
+                            <td>@u.Name</td>
+                            <td>@u.Email</td>
                         </tr>
                     }
                 </tbody>
-
             </table>
 
         </div>
 
-        <!-- ===== ACTION BUTTONS ===== -->
-        <div class="action-bar mt-4">
-
-            <a asp-action="Users" class="btn btn-primary">👥 Manage Users</a>
-
-            <a asp-action="Payments" class="btn btn-success">💳 View Payments</a>
-
-            <a asp-action="CreateUser" class="btn btn-outline-primary">➕ Add User</a>
-
-            <a asp-action="CreateAdmin" class="btn btn-outline-danger">🔐 Add Admin</a>
-
-        </div>
-
     </div>
+
+    <script>
+
+        // DARK MODE
+        function toggleDark() {
+        document.body.classList.toggle("dark");
+        localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+        }
+
+        window.onload = function () {
+        if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        }
+        };
+
+        // LIVE SEARCH (REAL TIME + HIGHLIGHT)
+        document.getElementById("search").addEventListener("input", function () {
+
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#userTable tr");
+
+        rows.forEach(row => {
+
+        let text = row.innerText.toLowerCase();
+
+        if (text.includes(value)) {
+        row.style.display = "";
+        row.classList.add("highlight");
+        } else {
+        row.style.display = "none";
+        row.classList.remove("highlight");
+        }
+
+        });
+
+        });
+
+        // CHART
+        const total = @Model.TotalUsers;
+        const data = [1,2,3,4,5,6].map(x => Math.max(1, Math.floor(total/6)*x));
+
+        new Chart(document.getElementById("chart"), {
+        type: "line",
+        data: {
+        labels: ["Jan","Feb","Mar","Apr","May","Jun"],
+        datasets: [{
+        label: "Users Growth",
+        data: data,
+        borderColor: "#0d6efd",
+        fill: true
+        }]
+        }
+        });
+
+    </script>
 
 </body>
 </html>

@@ -14,153 +14,147 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <style>
-        body {
-            background: linear-gradient(135deg, #0d6efd, #4f8cff);
-            font-family: 'Segoe UI', sans-serif;
-            min-height: 100vh;
-        }
+            body {
+                background: linear-gradient(135deg, #0d6efd, #ffffff);
+                font-family: 'Segoe UI', sans-serif;
+                min-height: 100vh;
+            }
 
-        /* ===== ANIMATION ===== */
-        @@keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
+            /* TOP BACK BUTTON */
+            .top-bar {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+            }
 
-        /* ===== LOADER ===== */
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
+                .top-bar a {
+                    border-radius: 30px;
+                    padding: 8px 16px;
+                    background: white;
+                    color: #0d6efd;
+                    text-decoration: none;
+                    font-weight: 600;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                }
 
-        /* ===== CONTAINER ===== */
-        .form-container {
-            max-width: 520px;
-            margin: 70px auto;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.6s ease;
-        }
+            /* CARD */
+            .form-container {
+                max-width: 520px;
+                margin: 90px auto;
+                background: white;
+                padding: 35px;
+                border-radius: 18px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            }
 
-        /* ===== HEADER ===== */
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+            /* LOGO */
+            .logo {
+                text-align: center;
+                margin-bottom: 15px;
+            }
 
-        .header h2 {
-            color: #0d6efd;
-            font-weight: 700;
-        }
+                .logo img {
+                    width: 70px;
+                    height: 70px;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    border: 2px solid #0d6efd;
+                }
 
-        .header i {
-            font-size: 40px;
-            color: #0d6efd;
-        }
+            /* HEADER */
+            .header {
+                text-align: center;
+                margin-bottom: 25px;
+            }
 
-        /* ===== INPUT ===== */
-        .form-control {
-            border-radius: 12px;
-            padding: 12px;
-            transition: 0.3s;
-        }
+                .header h2 {
+                    color: #0d6efd;
+                    font-weight: 700;
+                }
 
-        .form-control:focus {
-            box-shadow: 0 0 10px rgba(13,110,253,0.3);
-            border-color: #0d6efd;
-        }
+                .header p {
+                    color: #555;
+                    font-size: 14px;
+                }
 
-        /* ===== BUTTON ===== */
-        .btn-primary {
-            border-radius: 30px;
-            padding: 10px;
-            font-weight: 500;
-            transition: 0.3s ease;
-        }
+            /* INPUT */
+            .form-control {
+                border-radius: 12px;
+                padding: 12px;
+                border: 1px solid #ccc;
+            }
 
-        .btn-primary:hover {
-            transform: scale(1.05);
-        }
+                .form-control:focus {
+                    border-color: #0d6efd;
+                    box-shadow: 0 0 8px rgba(13,110,253,0.3);
+                }
 
-        /* ===== BACK BUTTON ===== */
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
+            /* BUTTON */
+            .btn-primary {
+                border-radius: 30px;
+                padding: 10px;
+                font-weight: 600;
+                background: #0d6efd;
+                border: none;
+            }
 
-        .back-btn a {
-            border-radius: 30px;
-            padding: 8px 16px;
-        }
+                .btn-primary:hover {
+                    background: #084298;
+                }
+
+            label {
+                font-weight: 500;
+            }
 
     </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
-<div class="loader" id="loader">
-    <div class="spinner-border text-primary" role="status"></div>
-</div>
-
-<!-- BACK BUTTON -->
-
-<a asp-controller="Admin" asp-action="Index" class="btn btn-light">
-    ← Back
-</a>
-
-
-<div class="form-container">
-
-    <!-- HEADER -->
-    <div class="header">
-        <i class="bi bi-bank2"></i>
-        <h2>Create Bank User</h2>
-        <p class="text-muted">Securely add a new customer account</p>
+    <!-- BACK BUTTON -->
+    <div class="top-bar">
+        <a asp-controller="Admin" asp-action="Index">← Back</a>
     </div>
 
-    <!-- FORM -->
-    <form asp-action="CreateUser" method="post" onsubmit="showLoader()">
+    <!-- FORM CARD -->
+    <div class="form-container">
 
-        <div class="mb-3">
-            <label class="form-label">Full Name</label>
-            <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="~/image/image_Logo.jpeg" alt="Logo" />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Email Address</label>
-            <input asp-for="Email" class="form-control" placeholder="Enter email" />
+        <!-- HEADER -->
+        <div class="header">
+            <h2>User Registration</h2>
+            <p>Create a secure customer account</p>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
-        </div>
+        <!-- FORM -->
+        <form asp-action="CreateUser" method="post">
 
-        <button class="btn btn-primary w-100">
-            💾 Save User
-        </button>
+            <div class="mb-3">
+                <label>Full Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+            </div>
 
-    </form>
+            <div class="mb-3">
+                <label>Email Address</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email" />
+            </div>
 
-</div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+            </div>
 
-<script>
-    function showLoader() {
-        document.getElementById("loader").style.display = "flex";
-    }
-</script>
+            <button class="btn btn-primary w-100">
+                💾 Save User
+            </button>
+
+        </form>
+
+    </div>
 
 </body>
 </html>

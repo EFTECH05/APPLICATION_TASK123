@@ -13,7 +13,6 @@
         height: 100vh;
     }
 
-    /* CENTER WRAPPER */
     .wrapper {
         min-height: 100vh;
         display: flex;
@@ -59,19 +58,28 @@
         padding: 40px;
         box-shadow: 0 18px 45px rgba(0,0,0,0.12);
         animation: fadeIn 0.5s ease;
+        text-align: center;
     }
 
-    /* HEADER */
+    /* LOGO */
+    .logo img {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #0d6efd;
+        margin-bottom: 10px;
+    }
+
+    /* TITLE */
     .title {
         font-size: 24px;
         font-weight: 700;
-        text-align: center;
         color: #0d6efd;
-        margin-bottom: 8px;
+        margin-bottom: 5px;
     }
 
     .subtitle {
-        text-align: center;
         font-size: 14px;
         color: #6c757d;
         margin-bottom: 25px;
@@ -83,6 +91,7 @@
         font-size: 13px;
         margin-bottom: 6px;
         display: block;
+        text-align: left;
         color: #333;
     }
 
@@ -120,27 +129,9 @@
         transform: translateY(-2px);
     }
 
-    /* ANIMATION */
     @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* MOBILE */
-    @@media (max-width: 576px) {
-        .card {
-            padding: 25px;
-        }
-
-        .title {
-            font-size: 20px;
-        }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 
@@ -153,8 +144,13 @@
         </a>
     </div>
 
-    <!-- FORM CARD -->
+    <!-- CARD -->
     <div class="card">
+
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="~/image/image_Logo.jpeg" alt="Logo" />
+        </div>
 
         <div class="title">Create Admin</div>
         <div class="subtitle">Add a secure administrator account</div>

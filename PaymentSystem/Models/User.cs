@@ -1,4 +1,6 @@
-﻿namespace PaymentSystem.Models
+﻿using System;
+
+namespace PaymentSystem.Models
 {
     public class User
     {
@@ -9,11 +11,14 @@
         public string? Password { get; set; }
 
         public string? Role { get; set; }
-
         public string? Status { get; set; }
 
         public bool IsApproved { get; set; }
 
         public string? CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public string? PendingName { get; set; }
+        public string? PendingEmail { get; set; }
     }
 }

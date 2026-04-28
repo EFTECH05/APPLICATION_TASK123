@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PaymentSystem.Models;
+using PaymentSystem.Filters;
 
 namespace PaymentSystem.Controllers
 {
+    [AdminAuthorize]
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;
@@ -13,37 +15,17 @@ namespace PaymentSystem.Controllers
             _context = context;
         }
 
-        // ================= ROLE CHECK =================
-        private bool IsAdmin()
+        // ================= ROLE =================
+        private string? GetRole()
         {
-            var role = HttpContext.Session.GetString("Role");
-            return role == "Admin" || role == "SuperAdmin";
-        }
-
-        private bool IsSuperAdmin()
-        {
-            var role = HttpContext.Session.GetString("Role");
-            return role == "SuperAdmin";
-        }
-
-        private IActionResult RedirectToLogin()
-        {
-            return RedirectToAction("Login", "Auth");
+            return HttpContext.Session.GetString("Role");
         }
 
         // ================= DASHBOARD =================
         public IActionResult Index()
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
-
-            var users = _context.Users
-                .AsNoTracking()
-                .ToList();
-
-            var payments = _context.Payments
-                .AsNoTracking()
-                .ToList();
+            var users = _context.Users.AsNoTracking().ToList();
+            var payments = _context.Payments.AsNoTracking().ToList();
 
             var model = new DashboardViewModel
             {
@@ -59,23 +41,22 @@ namespace PaymentSystem.Controllers
         // ================= USERS =================
         public IActionResult Users()
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
 
-            var users = _context.Users
-                .AsNoTracking()
-                .ToList();
+            IQueryable<User> users = _context.Users.AsNoTracking();
 
-            return View(users);
+            if (role == "Admin")
+            {
+                users = users.Where(u => u.Role == "User");
+            }
+
+            return View(users.ToList());
         }
 
         // ================= CREATE USER =================
         [HttpGet]
         public IActionResult CreateUser()
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
-
             return View();
         }
 
@@ -83,13 +64,11 @@ namespace PaymentSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateUser(User model)
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
-
             if (!ModelState.IsValid)
                 return View(model);
 
             model.Role = "User";
+            model.CreatedAt = DateTime.Now;
 
             _context.Users.Add(model);
             _context.SaveChanges();
@@ -97,12 +76,15 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("Users");
         }
 
-        // ================= CREATE ADMIN =================
+        // ================= CREATE ADMIN (FIXED SECURITY) =================
         [HttpGet]
         public IActionResult CreateAdmin()
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
+
+            // 🚫 ONLY SUPER ADMIN CAN ACCESS
+            if (role != "SuperAdmin")
+                return View("AccessDenied");
 
             return View();
         }
@@ -111,8 +93,11 @@ namespace PaymentSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateAdmin(User model)
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
+
+            // 🚫 BLOCK NON SUPER ADMIN
+            if (role != "SuperAdmin")
+                return View("AccessDenied");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -121,6 +106,7 @@ namespace PaymentSystem.Controllers
             model.Status = "Pending";
             model.IsApproved = false;
             model.CreatedBy = HttpContext.Session.GetString("User");
+            model.CreatedAt = DateTime.Now;
 
             _context.Users.Add(model);
             _context.SaveChanges();
@@ -132,19 +118,13 @@ namespace PaymentSystem.Controllers
         [HttpGet]
         public IActionResult RequestUpdate(int id)
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
-
             var user = _context.Users.Find(id);
 
             if (user == null)
                 return NotFound();
 
             if (user.Role == "SuperAdmin")
-            {
-                TempData["Error"] = "Main Admin cannot be edited.";
                 return RedirectToAction("Users");
-            }
 
             return View(user);
         }
@@ -154,9 +134,6 @@ namespace PaymentSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult RequestUpdate(User model)
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
-
             var user = _context.Users.Find(model.Id);
 
             if (user == null)
@@ -165,9 +142,8 @@ namespace PaymentSystem.Controllers
             if (user.Role == "SuperAdmin")
                 return RedirectToAction("Users");
 
-            // BANKING STYLE: NO DIRECT UPDATE, ONLY REQUEST STATUS
-            user.Name = model.Name;
-            user.Email = model.Email;
+            user.PendingName = model.Name;
+            user.PendingEmail = model.Email;
             user.Status = "Pending Update Approval";
 
             _context.SaveChanges();
@@ -175,11 +151,13 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("Users");
         }
 
-        // ================= UPDATE REQUEST LIST (SUPERADMIN) =================
+        // ================= UPDATE REQUESTS =================
         public IActionResult UpdateRequests()
         {
-            if (!IsSuperAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
+
+            if (role != "SuperAdmin")
+                return RedirectToAction("Users");
 
             var requests = _context.Users
                 .AsNoTracking()
@@ -192,14 +170,23 @@ namespace PaymentSystem.Controllers
         // ================= APPROVE UPDATE =================
         public IActionResult ApproveUpdate(int id)
         {
-            if (!IsSuperAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
+
+            if (role != "SuperAdmin")
+                return RedirectToAction("Users");
 
             var user = _context.Users.Find(id);
 
             if (user != null)
             {
+                if (!string.IsNullOrEmpty(user.PendingName))
+                    user.Name = user.PendingName;
+
+                if (!string.IsNullOrEmpty(user.PendingEmail))
+                    user.Email = user.PendingEmail;
+
                 user.Status = "Active";
+
                 _context.SaveChanges();
             }
 
@@ -209,22 +196,21 @@ namespace PaymentSystem.Controllers
         // ================= DELETE USER =================
         public IActionResult DeleteUser(int id)
         {
-            if (!IsAdmin())
-                return RedirectToLogin();
+            var role = GetRole();
 
             var user = _context.Users.Find(id);
 
-            if (user != null)
-            {
-                if (user.Role == "SuperAdmin")
-                {
-                    TempData["Error"] = "Main Admin cannot be deleted.";
-                    return RedirectToAction("Users");
-                }
+            if (user == null)
+                return NotFound();
 
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-            }
+            if (user.Role == "SuperAdmin")
+                return RedirectToAction("Users");
+
+            if (role == "Admin" && user.Role != "User")
+                return RedirectToAction("Users");
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
 
             return RedirectToAction("Users");
         }

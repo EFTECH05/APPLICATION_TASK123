@@ -6,10 +6,10 @@
 
 <style>
     body {
-        background: linear-gradient(135deg, #0d6efd, #e9f2ff);
+        background: linear-gradient(135deg, #0d6efd, #6ea8fe);
         min-height: 100vh;
         margin: 0;
-        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
     }
 
     .page-wrapper {
@@ -20,14 +20,16 @@
         padding: 20px;
     }
 
+    /* GLASS CARD */
     .register-wrapper {
         width: 100%;
         max-width: 1000px;
         display: flex;
-        background: white;
+        backdrop-filter: blur(15px);
+        background: rgba(255,255,255,0.95);
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.25);
     }
 
     /* LEFT PANEL */
@@ -41,34 +43,41 @@
         justify-content: center;
     }
 
-        .left-panel h1 {
-            font-weight: 700;
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .left-panel p {
-            opacity: 0.9;
-            font-size: 15px;
-        }
-
-        .left-panel ul {
-            margin-top: 20px;
-            padding-left: 18px;
-        }
-
-        .left-panel li {
-            margin-bottom: 8px;
-        }
-
     .brand {
-        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 20px;
         font-weight: bold;
         margin-bottom: 20px;
     }
 
-    .highlight {
-        color: #ffd700;
+        .brand img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+    .left-panel h1 {
+        font-weight: 700;
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+
+    .left-panel p {
+        opacity: 0.9;
+        font-size: 15px;
+    }
+
+    .left-panel ul {
+        margin-top: 20px;
+        padding-left: 18px;
+    }
+
+    .left-panel li {
+        margin-bottom: 8px;
     }
 
     /* RIGHT PANEL */
@@ -77,26 +86,24 @@
         padding: 50px;
     }
 
-        .right-panel h3 {
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
+    h3 {
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 500;
+    }
 
     .form-control {
         border-radius: 10px;
         padding: 12px;
-        border: 1px solid #ddd;
     }
 
         .form-control:focus {
             border-color: #0d6efd;
-            box-shadow: none;
+            box-shadow: 0 0 0 3px rgba(13,110,253,0.2);
         }
-
-    label {
-        font-weight: 500;
-        margin-bottom: 5px;
-    }
 
     .btn-primary {
         border-radius: 30px;
@@ -106,7 +113,7 @@
     }
 
         .btn-primary:hover {
-            background-color: #0046b3;
+            background: #0046b3;
         }
 
     .alert {
@@ -138,7 +145,8 @@
         <div class="left-panel">
 
             <div class="brand">
-                💳 GlobalTrust Bank
+                <img src="~/image/image_Logo.jpeg" alt="Logo" />
+                GlobalTrust Bank
             </div>
 
             <h1>Create Your Secure Account</h1>

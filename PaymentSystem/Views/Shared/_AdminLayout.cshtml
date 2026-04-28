@@ -1,6 +1,15 @@
 ﻿@{
     var user = Context.Session.GetString("User");
-    var role = Context.Session.GetString("Role");
+
+    // 🔐 SAFE ROLE HANDLING (FIX)
+    var role = Context.Session.GetString("Role")?.Trim();
+
+    bool isSuperAdmin =
+        !string.IsNullOrEmpty(role) &&
+        role.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase);
+
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!DOCTYPE html>
@@ -15,59 +24,59 @@
             body {
                 margin: 0;
                 font-family: 'Segoe UI', sans-serif;
-                background: #f4f6fb;
+                background: #f5f7fb;
             }
 
-            /* SIDEBAR */
             .sidebar {
-                width: 240px;
+                width: 250px;
                 height: 100vh;
-                background: #0d6efd;
+                background: white;
                 position: fixed;
                 top: 0;
                 left: 0;
                 padding: 20px;
-                color: white;
+                border-right: 1px solid #e5e7eb;
             }
-
-                .sidebar h3 {
-                    font-weight: 700;
-                    margin-bottom: 30px;
-                }
 
                 .sidebar a {
                     display: block;
-                    color: white;
-                    text-decoration: none;
                     padding: 10px;
-                    margin-bottom: 10px;
+                    margin-bottom: 6px;
+                    text-decoration: none;
+                    color: #334155;
                     border-radius: 8px;
-                    transition: 0.3s;
                 }
 
                     .sidebar a:hover {
-                        background: rgba(255,255,255,0.2);
+                        background: #e0ecff;
+                        color: #2563eb;
                     }
 
-            /* TOP BAR */
+                    .sidebar a.active {
+                        background: #2563eb;
+                        color: white;
+                    }
+
             .topbar {
-                margin-left: 240px;
+                margin-left: 250px;
                 background: white;
-                padding: 15px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                padding: 15px;
+                border-bottom: 1px solid #e5e7eb;
             }
 
-            /* CONTENT */
             .content {
-                margin-left: 240px;
+                margin-left: 250px;
                 padding: 20px;
             }
 
+            .card-box {
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+            }
+
             .badge-role {
-                background: #0d6efd;
+                background: #2563eb;
                 color: white;
                 padding: 5px 10px;
                 border-radius: 20px;
@@ -79,28 +88,63 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h3>🏦 Admin Panel</h3>
 
-        <a asp-controller="Admin" asp-action="Index">🏠 Dashboard</a>
-        <a asp-controller="Admin" asp-action="Users">👥 Users</a>
-        <a asp-controller="Admin" asp-action="CreateUser">➕ Create User</a>
-        <a asp-controller="Admin" asp-action="CreateAdmin">🔐 Create Admin</a>
-        <a asp-controller="Admin" asp-action="UpdateRequests">📩 Requests</a>
-        <a asp-controller="Auth" asp-action="Logout">🚪 Logout</a>
+        <h5 class="text-primary"></h5>
+
+        <a asp-controller="Admin" asp-action="Index"
+               class="@(controller == "Admin" && action == "Index" ? "active" : "")">
+            🏠 OVERVIEW
+        </a>
+
+        <a asp-controller="Admin" asp-action="Users">
+            👥 Users
+        </a>
+
+        <a asp-controller="Admin" asp-action="CreateUser">
+            ➕ Create User
+        </a>
+
+        <!-- 🔐 ONLY SUPER ADMIN SEES THIS -->
+        @if (isSuperAdmin)
+        {
+            <a asp-controller="Admin" asp-action="CreateAdmin">
+                🔐 Create Admin
+            </a>
+        }
+
+        <a asp-controller="Admin" asp-action="UpdateRequests">
+            📩 Requests
+        </a>
+
+        <a asp-controller="Admin" asp-action="Settings">
+            ⚙️ Settings
+        </a>
+
+        <a asp-controller="Admin" asp-action="Reports">
+            📊 Reports
+        </a>
+
+        <a asp-controller="Admin" asp-action="LinkedAccounts">
+            🔗 Linked Accounts
+        </a>
+
+        <a asp-controller="Auth" asp-action="Logout">
+            🚪 Logout
+        </a>
+
     </div>
 
     <!-- TOPBAR -->
     <div class="topbar">
-        <div>
-            Logged in as: <b>@user</b>
-        </div>
-
+        Welcome, <b>@user</b>
         <span class="badge-role">@role</span>
     </div>
 
-    <!-- PAGE CONTENT -->
+    <!-- CONTENT -->
     <div class="content">
-        @RenderBody()
+        <div class="card-box">
+            @RenderBody()
+        </div>
     </div>
 
 </body>

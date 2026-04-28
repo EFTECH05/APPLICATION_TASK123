@@ -4,12 +4,13 @@
 
 <style>
     body {
-        background: linear-gradient(135deg, #0d6efd, #e9f2ff);
+        background: linear-gradient(135deg, #0d6efd, #6ea8fe);
         min-height: 100vh;
         margin: 0;
-        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
     }
 
+    /* CENTER WRAPPER */
     .page-wrapper {
         min-height: 100vh;
         display: flex;
@@ -18,14 +19,16 @@
         padding: 20px;
     }
 
+    /* LOGIN CARD (GLASS EFFECT) */
     .login-wrapper {
         width: 100%;
         max-width: 900px;
         display: flex;
-        background: white;
+        backdrop-filter: blur(15px);
+        background: rgba(255,255,255,0.9);
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.25);
     }
 
     /* LEFT PANEL */
@@ -39,57 +42,57 @@
         justify-content: center;
     }
 
-        .left-panel h1 {
-            font-weight: 700;
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .left-panel p {
-            opacity: 0.9;
-            font-size: 15px;
-        }
-
-        .left-panel ul {
-            margin-top: 20px;
-            padding-left: 18px;
-        }
-
-        .left-panel li {
-            margin-bottom: 8px;
-        }
-
     .brand {
         font-size: 22px;
         font-weight: bold;
-        margin-bottom: 20px;
     }
+
+    .left-panel h1 {
+        font-weight: 700;
+        margin-top: 20px;
+    }
+
+    .left-panel p {
+        opacity: 0.9;
+    }
+
+    .left-panel img {
+        height: 55px;
+        width: 55px;
+        border-radius: 50%;
+        border: 2px solid white;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+        .left-panel img:hover {
+            transform: scale(1.1);
+        }
 
     /* RIGHT PANEL */
     .right-panel {
         flex: 1;
         padding: 50px;
+        background: white;
     }
 
-        .right-panel h3 {
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
+    h3 {
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
 
     label {
         font-weight: 500;
-        margin-bottom: 5px;
     }
 
     .form-control {
         border-radius: 10px;
         padding: 12px;
-        border: 1px solid #ddd;
     }
 
         .form-control:focus {
             border-color: #0d6efd;
-            box-shadow: none;
+            box-shadow: 0 0 0 3px rgba(13,110,253,0.2);
         }
 
     .btn-primary {
@@ -100,11 +103,27 @@
     }
 
         .btn-primary:hover {
-            background-color: #0046b3;
+            background: #0046b3;
         }
 
-    .alert {
-        border-radius: 10px;
+    /* PASSWORD TOGGLE */
+    .password-wrapper {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    /* LOADING STATE */
+    .loading {
+        pointer-events: none;
+        opacity: 0.7;
     }
 
     /* RESPONSIVE */
@@ -131,22 +150,17 @@
         <!-- ================= LEFT ================= -->
         <div class="left-panel">
 
-            <div class="brand">
-                💳 GlobalTrust Bank
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img src="~/image/image_Logo.jpeg" />
+                <div class="brand">GlobalTrust Bank</div>
             </div>
 
             <h1>Welcome Back</h1>
 
             <p>
-                Login securely to access your banking dashboard, manage payments,
-                and track transactions in real time.
+                Secure login to access your banking dashboard,
+                payments, and transactions.
             </p>
-
-            <ul>
-                <li>✔ Secure authentication</li>
-                <li>✔ Fast account access</li>
-                <li>✔ Encrypted transactions</li>
-            </ul>
 
         </div>
 
@@ -162,19 +176,20 @@
                 </div>
             }
 
-            <form asp-controller="Auth" asp-action="Login" method="post">
+            <form asp-controller="Auth" asp-action="Login" method="post" id="loginForm">
 
                 <div class="mb-3">
                     <label>Username or Email</label>
                     <input name="username" class="form-control" placeholder="Enter username or email" />
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 password-wrapper">
                     <label>Password</label>
-                    <input name="password" type="password" class="form-control" placeholder="Enter password" />
+                    <input id="password" name="password" type="password" class="form-control" placeholder="Enter password" />
+                    <span class="toggle-password" onclick="togglePassword()">👁</span>
                 </div>
 
-                <button class="btn btn-primary w-100 mt-2">
+                <button class="btn btn-primary w-100 mt-2" id="loginBtn">
                     Login
                 </button>
 
@@ -190,3 +205,17 @@
     </div>
 
 </div>
+
+<script>
+    // SHOW/HIDE PASSWORD
+    function togglePassword() {
+        var pass = document.getElementById("password");
+        pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    // LOADING EFFECT
+    document.getElementById("loginForm").addEventListener("submit", function () {
+        document.getElementById("loginBtn").innerText = "Logging in...";
+        document.getElementById("loginBtn").classList.add("loading");
+    });
+</script>
