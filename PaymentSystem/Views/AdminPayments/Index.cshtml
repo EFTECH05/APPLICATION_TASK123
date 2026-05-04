@@ -1,0 +1,206 @@
+﻿@model List<PaymentSystem.Models.Payment>
+
+@{
+    Layout = null;
+    var role = Context.Session.GetString("Role");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Payments</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+            body {
+                background: linear-gradient(135deg, #eef2ff, #f8f9ff);
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+            .container-box {
+                max-width: 1200px;
+                margin: 40px auto;
+                background: white;
+                padding: 25px;
+                border-radius: 16px;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .title {
+                font-size: 22px;
+                font-weight: 600;
+                color: #0d6efd;
+            }
+
+            .back-btn {
+                background: #0d6efd;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 10px;
+                text-decoration: none;
+                transition: 0.3s;
+            }
+
+                .back-btn:hover {
+                    background: #084298;
+                    color: white;
+                }
+
+            table {
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            thead {
+                background: #0d6efd;
+                color: white;
+            }
+
+            th, td {
+                padding: 12px !important;
+                vertical-align: middle;
+            }
+
+            .badge {
+                padding: 8px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+            }
+
+            .pending {
+                background: #ffc107;
+                color: black;
+            }
+
+            .approved {
+                background: #28a745;
+                color: white;
+            }
+
+            .rejected {
+                background: #dc3545;
+                color: white;
+            }
+
+            .action-btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                border-radius: 8px;
+            }
+
+            .card-glow {
+                box-shadow: 0 5px 15px rgba(13,110,253,0.15);
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-box card-glow">
+
+        <!-- HEADER -->
+        <div class="header">
+
+            <div class="title">💳 Customer Payments Portal</div>
+
+            <div>
+                <a href="javascript:history.back()" class="back-btn">
+                    ⬅ Back
+                </a>
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>Recipient</th>
+                        <th>Bank</th>
+                        <th>Account</th>
+                        <th>SWIFT</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int i = 1;
+                    }
+
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@p.UserId</td>
+                            <td>@p.RecipientName</td>
+                            <td>@p.BankName</td>
+                            <td>@p.AccountNumber</td>
+                            <td>@p.SwiftCode</td>
+                            <td><b>R @p.Amount</b></td>
+                            <td>@p.Currency</td>
+
+                            <td>
+                                @if (p.Status == "Pending")
+                                {
+                                    <span class="badge pending">Pending</span>
+                                }
+                                else if (p.Status == "Approved")
+                                {
+                                    <span class="badge approved">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge rejected">Rejected</span>
+                                }
+                            </td>
+
+                            <td>@p.DateCreated.ToString("dd MMM yyyy")</td>
+
+                            <td>
+
+                                <form asp-action="Approve" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button class="btn btn-success action-btn">✔</button>
+                                </form>
+
+                                <form asp-action="Reject" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button class="btn btn-danger action-btn">✖</button>
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        i++;
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
