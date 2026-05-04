@@ -20,10 +20,9 @@
         padding: 20px;
     }
 
-    /* GLASS CARD */
     .register-wrapper {
         width: 100%;
-        max-width: 1000px;
+        max-width: 1050px;
         display: flex;
         backdrop-filter: blur(15px);
         background: rgba(255,255,255,0.95);
@@ -32,7 +31,6 @@
         box-shadow: 0 25px 60px rgba(0,0,0,0.25);
     }
 
-    /* LEFT PANEL */
     .left-panel {
         flex: 1;
         background: linear-gradient(135deg, #0d6efd, #003a99);
@@ -71,16 +69,6 @@
         font-size: 15px;
     }
 
-    .left-panel ul {
-        margin-top: 20px;
-        padding-left: 18px;
-    }
-
-    .left-panel li {
-        margin-bottom: 8px;
-    }
-
-    /* RIGHT PANEL */
     .right-panel {
         flex: 1;
         padding: 50px;
@@ -89,10 +77,6 @@
     h3 {
         font-weight: 600;
         margin-bottom: 20px;
-    }
-
-    label {
-        font-weight: 500;
     }
 
     .form-control {
@@ -109,18 +93,21 @@
         border-radius: 30px;
         padding: 12px;
         font-weight: 600;
-        transition: 0.3s;
     }
-
-        .btn-primary:hover {
-            background: #0046b3;
-        }
 
     .alert {
         border-radius: 10px;
     }
 
-    /* RESPONSIVE */
+    .info-box {
+        background: #e9f2ff;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        margin-bottom: 15px;
+        color: #0d6efd;
+    }
+
     @@media (max-width: 768px) {
         .register-wrapper {
             flex-direction: column;
@@ -141,33 +128,31 @@
 
     <div class="register-wrapper">
 
-        <!-- ================= LEFT ================= -->
+        <!-- LEFT -->
         <div class="left-panel">
 
             <div class="brand">
-                <img src="~/image/image_Logo.jpeg" alt="Logo" />
+                <img src="~/image/image_Logo.jpeg" />
                 GlobalTrust Bank
             </div>
 
-            <h1>Create Your Secure Account</h1>
+            <h1>Secure Banking Registration</h1>
 
             <p>
-                Join a modern banking system built for fast,
-                secure and global transactions.
+                Create your international banking profile with OTP verification security.
             </p>
-
-            <ul>
-                <li>✔ Instant international transfers</li>
-                <li>✔ Secure encrypted accounts</li>
-                <li>✔ 24/7 online banking access</li>
-            </ul>
 
         </div>
 
-        <!-- ================= RIGHT ================= -->
+        <!-- RIGHT -->
         <div class="right-panel">
 
             <h3>Create Account</h3>
+
+            <div class="info-box">
+                🔐 Your OTP will be sent after submitting this form.
+                You must verify it before login is allowed.
+            </div>
 
             @if (ViewBag.Error != null)
             {
@@ -184,6 +169,16 @@
                 </div>
 
                 <div class="mb-3">
+                    <label>ID Number</label>
+                    <input asp-for="IdNumber" class="form-control" placeholder="8001011234088" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Account Number</label>
+                    <input asp-for="AccountNumber" class="form-control" placeholder="1234567890" />
+                </div>
+
+                <div class="mb-3">
                     <label>Email</label>
                     <input asp-for="Email" type="email" class="form-control" placeholder="john@email.com" />
                 </div>
@@ -193,13 +188,12 @@
                     <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
                 </div>
 
-                <div class="mb-3">
-                    <label>Confirm Password</label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" />
+                <div class="mb-2 text-muted" style="font-size:13px;">
+                    Password must include uppercase, lowercase, number & symbol.
                 </div>
 
                 <button class="btn btn-primary w-100 mt-2">
-                    Create Account
+                    Send OTP & Create Account
                 </button>
 
             </form>

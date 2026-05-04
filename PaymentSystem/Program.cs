@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PaymentSystem.Models;
+using PaymentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,14 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
-// ================= DATABASE =================
+// Email service
+builder.Services.AddScoped<EmailService>();
+
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 
-// ================= SESSION =================
+// Session
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -38,19 +42,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 🔐 SESSION MUST BE BEFORE SECURITY CHECKS
 app.UseSession();
-
 app.UseAuthorization();
 
-
-// ================= 🔥 GLOBAL ADMIN BLOCK (IMPORTANT FIX) =================
+// ================= SUPER ADMIN SECURITY =================
 app.Use(async (context, next) =>
 {
-    var path = context.Request.Path.Value;
+    var path = context.Request.Path.Value?.ToLower();
 
-    // Block ALL admin access if not authenticated
-    if (path != null && path.StartsWith("/Admin"))
+    if (!string.IsNullOrEmpty(path) && path.StartsWith("/admin"))
     {
         var user = context.Session.GetString("User");
         var role = context.Session.GetString("Role");
@@ -58,7 +58,7 @@ app.Use(async (context, next) =>
         if (string.IsNullOrEmpty(user) ||
             (role != "Admin" && role != "SuperAdmin"))
         {
-            context.Response.StatusCode = 404; // hide admin completely
+            context.Response.StatusCode = 404;
             return;
         }
     }
@@ -69,7 +69,7 @@ app.Use(async (context, next) =>
 // ================= ROUTES =================
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+    pattern: "{controller=Auth}/{action=Login}/{id?}"
 );
 
 // ================= SEED SUPER ADMIN =================
@@ -77,13 +77,15 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+    db.Database.EnsureCreated();
+
     if (!db.Users.Any(u => u.Role == "SuperAdmin"))
     {
         db.Users.Add(new User
         {
             Name = "Main Admin",
             Email = "admin@globaltrust.com",
-            Password = "123456",
+            Password = BCrypt.Net.BCrypt.HashPassword("123456"),
             Role = "SuperAdmin",
             Status = "Approved",
             IsApproved = true,

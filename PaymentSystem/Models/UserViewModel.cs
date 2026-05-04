@@ -1,7 +1,8 @@
 ﻿namespace PaymentSystem.Models
 {
-    public class UserViewModel
+    public class UserDashboardViewModel
     {
-        public string Name { get; set; }
+        public User User { get; set; }
+        public List<Payment> Payments { get; set; }
     }
 }

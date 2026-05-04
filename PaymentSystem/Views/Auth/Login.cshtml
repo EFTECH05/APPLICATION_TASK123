@@ -10,7 +10,6 @@
         font-family: 'Segoe UI', sans-serif;
     }
 
-    /* CENTER WRAPPER */
     .page-wrapper {
         min-height: 100vh;
         display: flex;
@@ -19,7 +18,6 @@
         padding: 20px;
     }
 
-    /* LOGIN CARD (GLASS EFFECT) */
     .login-wrapper {
         width: 100%;
         max-width: 900px;
@@ -31,7 +29,6 @@
         box-shadow: 0 25px 60px rgba(0,0,0,0.25);
     }
 
-    /* LEFT PANEL */
     .left-panel {
         flex: 1;
         background: linear-gradient(135deg, #0d6efd, #003a99);
@@ -42,47 +39,10 @@
         justify-content: center;
     }
 
-    .brand {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    .left-panel h1 {
-        font-weight: 700;
-        margin-top: 20px;
-    }
-
-    .left-panel p {
-        opacity: 0.9;
-    }
-
-    .left-panel img {
-        height: 55px;
-        width: 55px;
-        border-radius: 50%;
-        border: 2px solid white;
-        object-fit: cover;
-        transition: 0.3s;
-    }
-
-        .left-panel img:hover {
-            transform: scale(1.1);
-        }
-
-    /* RIGHT PANEL */
     .right-panel {
         flex: 1;
         padding: 50px;
         background: white;
-    }
-
-    h3 {
-        font-weight: 600;
-        margin-bottom: 20px;
-    }
-
-    label {
-        font-weight: 500;
     }
 
     .form-control {
@@ -90,23 +50,12 @@
         padding: 12px;
     }
 
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 3px rgba(13,110,253,0.2);
-        }
-
     .btn-primary {
         border-radius: 30px;
         padding: 12px;
         font-weight: 600;
-        transition: 0.3s;
     }
 
-        .btn-primary:hover {
-            background: #0046b3;
-        }
-
-    /* PASSWORD TOGGLE */
     .password-wrapper {
         position: relative;
     }
@@ -117,28 +66,16 @@
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
-        color: #6c757d;
     }
 
-    /* LOADING STATE */
     .loading {
         pointer-events: none;
         opacity: 0.7;
     }
 
-    /* RESPONSIVE */
     @@media (max-width: 768px) {
         .login-wrapper {
             flex-direction: column;
-        }
-
-        .left-panel {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .right-panel {
-            padding: 30px;
         }
     }
 </style>
@@ -147,49 +84,39 @@
 
     <div class="login-wrapper">
 
-        <!-- ================= LEFT ================= -->
+        <!-- LEFT -->
         <div class="left-panel">
-
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="~/image/image_Logo.jpeg" />
-                <div class="brand">GlobalTrust Bank</div>
-            </div>
-
+            <h2>GlobalTrust Bank</h2>
             <h1>Welcome Back</h1>
-
-            <p>
-                Secure login to access your banking dashboard,
-                payments, and transactions.
-            </p>
-
+            <p>Secure login with OTP verification system.</p>
         </div>
 
-        <!-- ================= RIGHT ================= -->
+        <!-- RIGHT -->
         <div class="right-panel">
 
             <h3>Login</h3>
 
             @if (ViewBag.Error != null)
             {
-                <div class="alert alert-danger">
-                    @ViewBag.Error
-                </div>
+                <div class="alert alert-danger">@ViewBag.Error</div>
             }
 
             <form asp-controller="Auth" asp-action="Login" method="post" id="loginForm">
 
+                @Html.AntiForgeryToken()
+
                 <div class="mb-3">
-                    <label>Username or Email</label>
-                    <input name="username" class="form-control" placeholder="Enter username or email" />
+                    <label>Email</label>
+                    <input name="username" class="form-control" placeholder="Enter email" required />
                 </div>
 
                 <div class="mb-3 password-wrapper">
                     <label>Password</label>
-                    <input id="password" name="password" type="password" class="form-control" placeholder="Enter password" />
+                    <input id="password" name="password" type="password" class="form-control" required />
                     <span class="toggle-password" onclick="togglePassword()">👁</span>
                 </div>
 
-                <button class="btn btn-primary w-100 mt-2" id="loginBtn">
+                <button class="btn btn-primary w-100" id="loginBtn">
                     Login
                 </button>
 
@@ -207,15 +134,13 @@
 </div>
 
 <script>
-    // SHOW/HIDE PASSWORD
     function togglePassword() {
         var pass = document.getElementById("password");
         pass.type = pass.type === "password" ? "text" : "password";
     }
 
-    // LOADING EFFECT
     document.getElementById("loginForm").addEventListener("submit", function () {
         document.getElementById("loginBtn").innerText = "Logging in...";
-        document.getElementById("loginBtn").classList.add("loading");
+        document.getElementById("loginBtn").disabled = true;
     });
 </script>

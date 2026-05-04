@@ -76,13 +76,12 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("Users");
         }
 
-        // ================= CREATE ADMIN (FIXED SECURITY) =================
+        // ================= CREATE ADMIN =================
         [HttpGet]
         public IActionResult CreateAdmin()
         {
             var role = GetRole();
 
-            // 🚫 ONLY SUPER ADMIN CAN ACCESS
             if (role != "SuperAdmin")
                 return View("AccessDenied");
 
@@ -95,7 +94,6 @@ namespace PaymentSystem.Controllers
         {
             var role = GetRole();
 
-            // 🚫 BLOCK NON SUPER ADMIN
             if (role != "SuperAdmin")
                 return View("AccessDenied");
 
@@ -114,7 +112,7 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("Users");
         }
 
-        // ================= REQUEST UPDATE (GET) =================
+        // ================= UPDATE REQUEST =================
         [HttpGet]
         public IActionResult RequestUpdate(int id)
         {
@@ -129,7 +127,6 @@ namespace PaymentSystem.Controllers
             return View(user);
         }
 
-        // ================= REQUEST UPDATE (POST) =================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult RequestUpdate(User model)
@@ -193,7 +190,9 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("UpdateRequests");
         }
 
-        // ================= DELETE USER =================
+        // =========================================================
+        // 🔥 FIXED DELETE USER (BANKING SAFE - OPTION 2)
+        // =========================================================
         public IActionResult DeleteUser(int id)
         {
             var role = GetRole();
@@ -203,15 +202,29 @@ namespace PaymentSystem.Controllers
             if (user == null)
                 return NotFound();
 
+            // 🚫 Protect SuperAdmin
             if (user.Role == "SuperAdmin")
                 return RedirectToAction("Users");
 
+            // 🚫 Admin restriction
             if (role == "Admin" && user.Role != "User")
                 return RedirectToAction("Users");
 
+            // ================= BANKING RULE =================
+            var hasTransactions = _context.Payments
+                .Any(p => p.UserId == id);
+
+            if (hasTransactions)
+            {
+                TempData["Error"] = "Cannot delete user. Transaction history exists.";
+                return RedirectToAction("Users");
+            }
+
+            // ================= DELETE =================
             _context.Users.Remove(user);
             _context.SaveChanges();
 
+            TempData["Success"] = "User deleted successfully.";
             return RedirectToAction("Users");
         }
     }
