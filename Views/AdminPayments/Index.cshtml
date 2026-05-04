@@ -1,0 +1,215 @@
+﻿@model List<PaymentSystem.Models.Payment>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Customer Payments";
+
+    var role = Context.Session.GetString("Role");
+    var user = Context.Session.GetString("User");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Payments</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+        --bg: #f5f8ff;
+        --card: #ffffff;
+        --text: #000;
+        --primary: #0d6efd;
+        --border: #e5e5e5;
+        }
+
+        body.dark {
+        --bg: #0b0f1a;
+        --card: #121826;
+        --text: #fff;
+        --border: #1f2a44;
+        }
+
+        body {
+        margin: 0;
+        font-family: 'Segoe UI';
+        background: var(--bg);
+        color: var(--text);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+        width: 240px;
+        height: 100vh;
+        position: fixed;
+        background: var(--card);
+        border-right: 1px solid var(--border);
+        padding: 15px;
+        }
+
+        .logo {
+        text-align: center;
+        margin-bottom: 20px;
+        }
+
+        .logo img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        }
+
+        .menu a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: var(--text);
+        border-radius: 8px;
+        margin-bottom: 5px;
+        }
+
+        .menu a:hover {
+        background: var(--primary);
+        color: #fff;
+        }
+
+        /* MAIN */
+        .main {
+        margin-left: 240px;
+        padding: 20px;
+        }
+
+        /* TOPBAR */
+        .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card);
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        }
+
+        .card-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 18px;
+        border-radius: 12px;
+        }
+
+        .table thead {
+        background: #0d6efd;
+        color: white;
+        }
+
+        .highlight {
+        background: rgba(13,110,253,0.08) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR (SAME AS ADMIN DASHBOARD) -->
+    <div class="sidebar">
+
+        <div class="logo">
+            <img src="~/image/image_Logo.jpeg" />
+            <h6>GlobalTrust</h6>
+        </div>
+
+        <div class="menu">
+            <a asp-controller="Admin" asp-action="Index">🏠 OVERVIEW</a>
+            <a asp-controller="Admin" asp-action="Users">👥 Users</a>
+            <a asp-controller="Admin" asp-action="CreateUser">➕ Create User</a>
+            <a asp-controller="Admin" asp-action="CreateAdmin">🔐 Create Admin</a>
+            <a asp-controller="Admin" asp-action="UpdateRequests">📩 Requests</a>
+
+            <hr />
+
+            <a asp-controller="Auth" asp-action="Logout">🚪 Logout</a>
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <h5>💳 Payments</h5>
+
+            <div>
+                <button onclick="toggleDark()" class="btn btn-outline-primary btn-sm">🌙</button>
+                <span class="badge bg-primary">@role</span>
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="card-box mt-3">
+
+            <h5 class="mb-3">Customer Payments</h5>
+
+            <table class="table table-hover table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User ID</th>
+                        <th>Recipient</th>
+                        <th>Account</th>
+                        <th>Bank</th>
+                        <th>SWIFT</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@p.UserId</td>
+                            <td>@p.RecipientName</td>
+                            <td>@p.AccountNumber</td>
+                            <td>@p.BankName</td>
+                            <td>@p.SwiftCode</td>
+                            <td>@p.Amount</td>
+                            <td>@p.Currency</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    @p.Status
+                                </span>
+                            </td>
+                            <td>@p.DateCreated.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+
+                        i++;
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <script>
+        function toggleDark() {
+        document.body.classList.toggle("dark");
+        }
+    </script>
+
+</body>
+</html>
