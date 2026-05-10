@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PaymentSystem.Models;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-// PDF aliases
-using PdfDocument = iTextSharp.text.Document;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 
 namespace PaymentSystem.Controllers
 {
@@ -19,23 +19,42 @@ namespace PaymentSystem.Controllers
             _context = context;
         }
 
-        // ================= USER DASHBOARD =================
+        // ================= DASHBOARD =================
         public IActionResult Index()
         {
             var email = HttpContext.Session.GetString("Email");
 
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrWhiteSpace(email))
                 return RedirectToAction("Login", "Auth");
 
-            var user = _context.Users.FirstOrDefault(x => x.Email == email);
+            var user = _context.Users
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Email == email);
 
             if (user == null)
+            {
+                HttpContext.Session.Clear();
                 return RedirectToAction("Login", "Auth");
+            }
 
-            var payments = _context.Payments
-                .Where(p => p.UserId == user.Id)
-                .OrderByDescending(p => p.DateCreated)
-                .ToList();
+            // ================= SAFE PAYMENT QUERY =================
+            List<Payment> payments = new List<Payment>();
+
+            try
+            {
+                payments = _context.Payments
+                    .AsNoTracking()
+                    .Where(p => p.UserId == user.Id)
+                    .OrderByDescending(p => p.DateCreated)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                // LOG ERROR (optional)
+                Console.WriteLine("Payment load error: " + ex.Message);
+
+                payments = new List<Payment>(); // prevent crash
+            }
 
             var model = new UserDashboardViewModel
             {
@@ -51,49 +70,45 @@ namespace PaymentSystem.Controllers
         {
             var email = HttpContext.Session.GetString("Email");
 
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrWhiteSpace(email))
                 return RedirectToAction("Login", "Auth");
 
-            var user = _context.Users.FirstOrDefault(x => x.Email == email);
+            var user = _context.Users
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Email == email);
 
             if (user == null)
-                return RedirectToAction("Login", "Auth");
-
-            var payments = _context.Payments
-                .Where(p => p.UserId == user.Id)
-                .OrderByDescending(p => p.DateCreated)
-                .ToList();
-
-            using (MemoryStream ms = new MemoryStream())
             {
-                PdfDocument doc = new PdfDocument(PageSize.A4, 25, 25, 30, 30);
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Auth");
+            }
+
+            List<Payment> payments = new List<Payment>();
+
+            try
+            {
+                payments = _context.Payments
+                    .AsNoTracking()
+                    .Where(p => p.UserId == user.Id)
+                    .OrderByDescending(p => p.DateCreated)
+                    .ToList();
+            }
+            catch
+            {
+                payments = new List<Payment>();
+            }
+
+            using (var ms = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 25, 25, 30, 30);
                 PdfWriter.GetInstance(doc, ms);
 
                 doc.Open();
 
-                // ================= COLORS =================
-                BaseColor white = new BaseColor(255, 255, 255);
-                BaseColor blue = new BaseColor(13, 110, 253);
-                BaseColor lightGray = new BaseColor(245, 245, 245);
-
-                // ================= LOGO =================
-                string logoPath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot/image/image_Logo.jpeg"
-                );
-
-                if (System.IO.File.Exists(logoPath))
-                {
-                    Image logo = Image.GetInstance(logoPath);
-                    logo.ScaleAbsolute(80f, 80f);
-                    logo.Alignment = Element.ALIGN_CENTER;
-                    doc.Add(logo);
-                }
-
                 // ================= TITLE =================
                 var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
 
-                Paragraph title = new Paragraph(
+                var title = new Paragraph(
                     "GLOBALTRUST BANK\nTRANSACTION STATEMENT\n\n",
                     titleFont
                 )
@@ -104,75 +119,30 @@ namespace PaymentSystem.Controllers
                 doc.Add(title);
 
                 // ================= USER INFO =================
-                PdfPTable infoTable = new PdfPTable(1);
-                infoTable.WidthPercentage = 100;
-
-                PdfPCell infoCell = new PdfPCell(new Phrase(
+                doc.Add(new Paragraph(
                     $"Customer: {user.Name ?? ""}\n" +
                     $"Email: {user.Email ?? ""}\n" +
-                    $"Generated: {DateTime.Now:dd MMM yyyy HH:mm}"
+                    $"Generated: {DateTime.Now:dd MMM yyyy HH:mm}\n\n"
                 ));
 
-                infoCell.Padding = 10;
-                infoCell.BackgroundColor = lightGray;
-                infoTable.AddCell(infoCell);
-
-                doc.Add(infoTable);
-                doc.Add(new Paragraph("\n"));
-
                 // ================= TABLE =================
-                PdfPTable table = new PdfPTable(5);
+                PdfPTable table = new PdfPTable(4);
                 table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 25, 25, 15, 15, 20 });
 
-                Font headerFont = FontFactory.GetFont(
-                    FontFactory.HELVETICA_BOLD, 10, white);
-
-                string[] headers = { "Recipient", "Bank", "Amount", "Currency", "Date" };
+                string[] headers = { "Recipient", "Bank", "Amount", "Date" };
 
                 foreach (var h in headers)
-                {
-                    PdfPCell cell = new PdfPCell(new Phrase(h, headerFont))
-                    {
-                        BackgroundColor = blue,
-                        HorizontalAlignment = Element.ALIGN_CENTER,
-                        Padding = 6
-                    };
-
-                    table.AddCell(cell);
-                }
-
-                // ================= ROWS =================
-                bool isAlt = false;
+                    table.AddCell(new Phrase(h));
 
                 foreach (var p in payments)
                 {
-                    BaseColor rowColor = isAlt ? lightGray : white;
-
-                    table.AddCell(new PdfPCell(new Phrase(p.RecipientName ?? "")) { BackgroundColor = rowColor });
-                    table.AddCell(new PdfPCell(new Phrase(p.BankName ?? "")) { BackgroundColor = rowColor });
-                    table.AddCell(new PdfPCell(new Phrase("R " + p.Amount.ToString("0.00"))) { BackgroundColor = rowColor });
-                    table.AddCell(new PdfPCell(new Phrase(p.Currency ?? "")) { BackgroundColor = rowColor });
-                    table.AddCell(new PdfPCell(new Phrase(p.DateCreated.ToString("dd MMM yyyy"))) { BackgroundColor = rowColor });
-
-                    isAlt = !isAlt;
+                    table.AddCell(p.RecipientName ?? "");
+                    table.AddCell(p.BankName ?? "");
+                    table.AddCell("R " + p.Amount.ToString("0.00"));
+                    table.AddCell(p.DateCreated.ToString("dd MMM yyyy"));
                 }
 
                 doc.Add(table);
-
-                // ================= FOOTER =================
-                doc.Add(new Paragraph("\n\n"));
-
-                Paragraph footer = new Paragraph(
-                    "This is a system-generated statement from GlobalTrust Digital Bank.",
-                    FontFactory.GetFont(FontFactory.HELVETICA, 9)
-                )
-                {
-                    Alignment = Element.ALIGN_CENTER
-                };
-
-                doc.Add(footer);
-
                 doc.Close();
 
                 return File(ms.ToArray(),

@@ -13,13 +13,11 @@ namespace PaymentSystem.Controllers
             _context = context;
         }
 
-        // ================= ADMIN PAYMENTS LIST =================
         public IActionResult Index()
         {
             var role = HttpContext.Session.GetString("Role");
             var user = HttpContext.Session.GetString("User");
 
-            // ================= AUTH CHECK =================
             if (string.IsNullOrEmpty(user))
                 return RedirectToAction("Login", "Auth");
 
@@ -34,41 +32,58 @@ namespace PaymentSystem.Controllers
             return View(payments);
         }
 
-        // ================= APPROVE PAYMENT =================
         [HttpPost]
-        public IActionResult Approve(int id)
+        public IActionResult Verify(int id)
         {
-            var role = HttpContext.Session.GetString("Role");
+            var p = _context.Payments.Find(id);
+            if (p == null) return NotFound();
 
-            if (role != "Admin" && role != "SuperAdmin")
-                return Forbid();
+            if (p.Status != PaymentStatus.Pending)
+                return RedirectToAction("Index");
 
-            var payment = _context.Payments.FirstOrDefault(p => p.Id == id);
-
-            if (payment == null)
-                return NotFound();
-
-            payment.Status = "Approved";
+            p.Status = PaymentStatus.Verified;
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-        // ================= REJECT PAYMENT =================
+        [HttpPost]
+        public IActionResult SendToSwift(int id)
+        {
+            var p = _context.Payments.Find(id);
+            if (p == null) return NotFound();
+
+            if (p.Status != PaymentStatus.Verified)
+                return RedirectToAction("Index");
+
+            p.Status = PaymentStatus.SentToSWIFT;
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Complete(int id)
+        {
+            var p = _context.Payments.Find(id);
+            if (p == null) return NotFound();
+
+            if (p.Status != PaymentStatus.SentToSWIFT)
+                return RedirectToAction("Index");
+
+            p.Status = PaymentStatus.Completed;
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public IActionResult Reject(int id)
         {
-            var role = HttpContext.Session.GetString("Role");
+            var p = _context.Payments.Find(id);
+            if (p == null) return NotFound();
 
-            if (role != "Admin" && role != "SuperAdmin")
-                return Forbid();
-
-            var payment = _context.Payments.FirstOrDefault(p => p.Id == id);
-
-            if (payment == null)
-                return NotFound();
-
-            payment.Status = "Rejected";
+            p.Status = PaymentStatus.Rejected;
             _context.SaveChanges();
 
             return RedirectToAction("Index");

@@ -15,17 +15,25 @@ namespace PaymentSystem.Controllers
             _context = context;
         }
 
-        // ================= ROLE =================
         private string? GetRole()
         {
             return HttpContext.Session.GetString("Role");
         }
 
-        // ================= DASHBOARD =================
+        // ================= DASHBOARD (SAFE FOR MANUAL DB) =================
         public IActionResult Index()
         {
             var users = _context.Users.AsNoTracking().ToList();
-            var payments = _context.Payments.AsNoTracking().ToList();
+
+            // SAFE: only select needed fields (prevents mapping crashes)
+            var payments = _context.Payments
+                .AsNoTracking()
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Amount
+                })
+                .ToList();
 
             var model = new DashboardViewModel
             {
@@ -46,9 +54,7 @@ namespace PaymentSystem.Controllers
             IQueryable<User> users = _context.Users.AsNoTracking();
 
             if (role == "Admin")
-            {
                 users = users.Where(u => u.Role == "User");
-            }
 
             return View(users.ToList());
         }
@@ -80,9 +86,7 @@ namespace PaymentSystem.Controllers
         [HttpGet]
         public IActionResult CreateAdmin()
         {
-            var role = GetRole();
-
-            if (role != "SuperAdmin")
+            if (GetRole() != "SuperAdmin")
                 return View("AccessDenied");
 
             return View();
@@ -92,9 +96,7 @@ namespace PaymentSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateAdmin(User model)
         {
-            var role = GetRole();
-
-            if (role != "SuperAdmin")
+            if (GetRole() != "SuperAdmin")
                 return View("AccessDenied");
 
             if (!ModelState.IsValid)
@@ -112,16 +114,47 @@ namespace PaymentSystem.Controllers
             return RedirectToAction("Users");
         }
 
-        // ================= UPDATE REQUEST =================
-        [HttpGet]
-        public IActionResult RequestUpdate(int id)
+        // ================= DELETE USER (SAFE FOR MANUAL DB) =================
+        public IActionResult DeleteUser(int id)
         {
+            var role = GetRole();
+
             var user = _context.Users.Find(id);
 
             if (user == null)
                 return NotFound();
 
             if (user.Role == "SuperAdmin")
+                return RedirectToAction("Users");
+
+            if (role == "Admin" && user.Role != "User")
+                return RedirectToAction("Users");
+
+            // SAFE CHECK (avoids casting crash in manual DB)
+            var hasTransactions = _context.Payments
+                .AsNoTracking()
+                .Any(p => EF.Property<int>(p, "UserId") == id);
+
+            if (hasTransactions)
+            {
+                TempData["Error"] = "Cannot delete user. Transaction history exists.";
+                return RedirectToAction("Users");
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            TempData["Success"] = "User deleted successfully.";
+            return RedirectToAction("Users");
+        }
+
+        // ================= UPDATE REQUEST =================
+        [HttpGet]
+        public IActionResult RequestUpdate(int id)
+        {
+            var user = _context.Users.Find(id);
+
+            if (user == null || user.Role == "SuperAdmin")
                 return RedirectToAction("Users");
 
             return View(user);
@@ -133,10 +166,7 @@ namespace PaymentSystem.Controllers
         {
             var user = _context.Users.Find(model.Id);
 
-            if (user == null)
-                return NotFound();
-
-            if (user.Role == "SuperAdmin")
+            if (user == null || user.Role == "SuperAdmin")
                 return RedirectToAction("Users");
 
             user.PendingName = model.Name;
@@ -151,9 +181,7 @@ namespace PaymentSystem.Controllers
         // ================= UPDATE REQUESTS =================
         public IActionResult UpdateRequests()
         {
-            var role = GetRole();
-
-            if (role != "SuperAdmin")
+            if (GetRole() != "SuperAdmin")
                 return RedirectToAction("Users");
 
             var requests = _context.Users
@@ -167,65 +195,21 @@ namespace PaymentSystem.Controllers
         // ================= APPROVE UPDATE =================
         public IActionResult ApproveUpdate(int id)
         {
-            var role = GetRole();
-
-            if (role != "SuperAdmin")
+            if (GetRole() != "SuperAdmin")
                 return RedirectToAction("Users");
 
             var user = _context.Users.Find(id);
 
             if (user != null)
             {
-                if (!string.IsNullOrEmpty(user.PendingName))
-                    user.Name = user.PendingName;
-
-                if (!string.IsNullOrEmpty(user.PendingEmail))
-                    user.Email = user.PendingEmail;
-
+                user.Name = user.PendingName ?? user.Name;
+                user.Email = user.PendingEmail ?? user.Email;
                 user.Status = "Active";
 
                 _context.SaveChanges();
             }
 
             return RedirectToAction("UpdateRequests");
-        }
-
-        // =========================================================
-        // 🔥 FIXED DELETE USER (BANKING SAFE - OPTION 2)
-        // =========================================================
-        public IActionResult DeleteUser(int id)
-        {
-            var role = GetRole();
-
-            var user = _context.Users.Find(id);
-
-            if (user == null)
-                return NotFound();
-
-            // 🚫 Protect SuperAdmin
-            if (user.Role == "SuperAdmin")
-                return RedirectToAction("Users");
-
-            // 🚫 Admin restriction
-            if (role == "Admin" && user.Role != "User")
-                return RedirectToAction("Users");
-
-            // ================= BANKING RULE =================
-            var hasTransactions = _context.Payments
-                .Any(p => p.UserId == id);
-
-            if (hasTransactions)
-            {
-                TempData["Error"] = "Cannot delete user. Transaction history exists.";
-                return RedirectToAction("Users");
-            }
-
-            // ================= DELETE =================
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-
-            TempData["Success"] = "User deleted successfully.";
-            return RedirectToAction("Users");
         }
     }
 }

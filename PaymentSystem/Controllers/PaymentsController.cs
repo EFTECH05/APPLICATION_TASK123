@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PaymentSystem.Models;
-using System.Text.RegularExpressions;
 
 namespace PaymentSystem.Controllers
 {
@@ -13,19 +13,7 @@ namespace PaymentSystem.Controllers
             _context = context;
         }
 
-        // ================= LOAD PAYMENT FORM =================
-        [HttpGet]
-        public IActionResult Create()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-                return RedirectToAction("Login", "Auth");
-
-            return View();
-        }
-
-        // ================= PROCESS PAYMENT =================
+        // ================= CREATE PAYMENT =================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Payment model)
@@ -35,67 +23,35 @@ namespace PaymentSystem.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
-            // ================= VALIDATION =================
-            if (!Regex.IsMatch(model.RecipientName ?? "", @"^[a-zA-Z\s]{3,100}$"))
-            {
-                TempData["Error"] = "Invalid recipient name";
-                return RedirectToAction("Index", "UserDashboard");
-            }
+            if (!ModelState.IsValid)
+                return View(model);
 
-            if (!Regex.IsMatch(model.AccountNumber ?? "", @"^[0-9]{6,20}$"))
-            {
-                TempData["Error"] = "Invalid account number";
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            if (!Regex.IsMatch(model.BankName ?? "", @"^[a-zA-Z\s]{3,100}$"))
-            {
-                TempData["Error"] = "Invalid bank name";
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            if (!Regex.IsMatch(model.SwiftCode ?? "", @"^[A-Z0-9]{8,11}$"))
-            {
-                TempData["Error"] = "Invalid SWIFT code";
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            if (model.Amount <= 0)
-            {
-                TempData["Error"] = "Invalid amount";
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.Currency))
-            {
-                TempData["Error"] = "Select currency";
-                return RedirectToAction("Index", "UserDashboard");
-            }
-
-            // ================= SAVE PAYMENT =================
             model.UserId = userId.Value;
-            model.Status = "Pending";
+
+            // ✅ ENUM FIX
+            model.Status = PaymentStatus.Pending;
+
             model.DateCreated = DateTime.Now;
 
             _context.Payments.Add(model);
             _context.SaveChanges();
 
-            // ================= FIX: TempData (NO DECIMAL ERROR) =================
-            TempData["Recipient"] = model.RecipientName ?? "";
-            TempData["Amount"] = model.Amount.ToString("0.00"); // ✅ FIXED
-            TempData["Bank"] = model.BankName ?? "";
-            TempData["Currency"] = model.Currency ?? "";
-            TempData["Status"] = "Pending";
+            TempData["Success"] = "Payment submitted successfully";
 
-            // ================= REDIRECT =================
-            return RedirectToAction("Success");
+            return RedirectToAction("Success", new { id = model.Id });
         }
 
-        // ================= SUCCESS PAGE =================
-        [HttpGet]
-        public IActionResult Success()
+        // ================= SUCCESS =================
+        public IActionResult Success(int id)
         {
-            return View();
+            var payment = _context.Payments
+                .AsNoTracking()
+                .FirstOrDefault(p => p.Id == id);
+
+            if (payment == null)
+                return NotFound();
+
+            return View(payment);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿@model List<PaymentSystem.Models.Payment>
 
+@using PaymentSystem.Models
+
 @{
     Layout = null;
     var role = Context.Session.GetString("Role");
@@ -14,193 +16,188 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <style>
-            body {
-                background: linear-gradient(135deg, #eef2ff, #f8f9ff);
-                font-family: 'Segoe UI', sans-serif;
-            }
+        body {
+            background: linear-gradient(135deg, #eef2ff, #f8f9ff);
+            font-family: 'Segoe UI', sans-serif;
+        }
 
-            .container-box {
-                max-width: 1200px;
-                margin: 40px auto;
-                background: white;
-                padding: 25px;
-                border-radius: 16px;
-                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            }
+        .container-box {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
 
-            .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-            .title {
-                font-size: 22px;
-                font-weight: 600;
-                color: #0d6efd;
-            }
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #0d6efd;
+        }
 
-            .back-btn {
-                background: #0d6efd;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 10px;
-                text-decoration: none;
-                transition: 0.3s;
-            }
+        .back-btn {
+            background: #0d6efd;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
 
-                .back-btn:hover {
-                    background: #084298;
-                    color: white;
-                }
+        .back-btn:hover {
+            background: #084298;
+        }
 
-            table {
-                border-radius: 10px;
-                overflow: hidden;
-            }
+        thead {
+            background: #0d6efd;
+            color: white;
+        }
 
-            thead {
-                background: #0d6efd;
-                color: white;
-            }
+        th, td {
+            padding: 12px !important;
+            vertical-align: middle;
+        }
 
-            th, td {
-                padding: 12px !important;
-                vertical-align: middle;
-            }
+        .badge-pending { background: #ffc107; color: black; }
+        .badge-verified { background: #17a2b8; color: white; }
+        .badge-swift { background: #0d6efd; color: white; }
+        .badge-completed { background: #28a745; color: white; }
+        .badge-rejected { background: #dc3545; color: white; }
 
-            .badge {
-                padding: 8px 10px;
-                border-radius: 20px;
-                font-size: 12px;
-            }
-
-            .pending {
-                background: #ffc107;
-                color: black;
-            }
-
-            .approved {
-                background: #28a745;
-                color: white;
-            }
-
-            .rejected {
-                background: #dc3545;
-                color: white;
-            }
-
-            .action-btn {
-                font-size: 12px;
-                padding: 5px 10px;
-                border-radius: 8px;
-            }
-
-            .card-glow {
-                box-shadow: 0 5px 15px rgba(13,110,253,0.15);
-            }
+        .action-btn {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container-box card-glow">
+<div class="container-box">
 
-        <!-- HEADER -->
-        <div class="header">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="title">💳 Admin SWIFT Payments</div>
 
-            <div class="title">💳 Customer Payments Portal</div>
+        <a href="javascript:history.back()" class="back-btn">⬅ Back</a>
+    </div>
 
-            <div>
-                <a href="javascript:history.back()" class="back-btn">
-                    ⬅ Back
-                </a>
-            </div>
+    <!-- TABLE -->
+    <div class="table-responsive">
 
-        </div>
+        <table class="table table-hover table-bordered">
 
-        <!-- TABLE -->
-        <div class="table-responsive">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Recipient</th>
+                    <th>Bank</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-            <table class="table table-hover table-bordered">
+            <tbody>
+            @{
+                int i = 1;
+            }
 
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>User</th>
-                        <th>Recipient</th>
-                        <th>Bank</th>
-                        <th>Account</th>
-                        <th>SWIFT</th>
-                        <th>Amount</th>
-                        <th>Currency</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@p.UserId</td>
+                    <td>@p.RecipientName</td>
+                    <td>@p.BankName</td>
+                    <td><b>R @p.Amount</b></td>
 
-                <tbody>
+                    <!-- STATUS (ENUM SAFE) -->
+                    <td>
+                        @switch (p.Status)
+                        {
+                            case PaymentStatus.Pending:
+                                <span class="badge badge-pending">Pending</span>
+                                break;
 
-                    @{
-                        int i = 1;
-                    }
+                            case PaymentStatus.Verified:
+                                <span class="badge badge-verified">Verified</span>
+                                break;
 
-                    @foreach (var p in Model)
-                    {
-                        <tr>
-                            <td>@i</td>
-                            <td>@p.UserId</td>
-                            <td>@p.RecipientName</td>
-                            <td>@p.BankName</td>
-                            <td>@p.AccountNumber</td>
-                            <td>@p.SwiftCode</td>
-                            <td><b>R @p.Amount</b></td>
-                            <td>@p.Currency</td>
+                            case PaymentStatus.SentToSWIFT:
+                                <span class="badge badge-swift">SWIFT Sent</span>
+                                break;
 
-                            <td>
-                                @if (p.Status == "Pending")
-                                {
-                                    <span class="badge pending">Pending</span>
-                                }
-                                else if (p.Status == "Approved")
-                                {
-                                    <span class="badge approved">Approved</span>
-                                }
-                                else
-                                {
-                                    <span class="badge rejected">Rejected</span>
-                                }
-                            </td>
+                            case PaymentStatus.Completed:
+                                <span class="badge badge-completed">Completed</span>
+                                break;
 
-                            <td>@p.DateCreated.ToString("dd MMM yyyy")</td>
+                            case PaymentStatus.Rejected:
+                                <span class="badge badge-rejected">Rejected</span>
+                                break;
+                        }
+                    </td>
 
-                            <td>
+                    <td>@p.DateCreated.ToString("dd MMM yyyy")</td>
 
-                                <form asp-action="Approve" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@p.Id" />
-                                    <button class="btn btn-success action-btn">✔</button>
-                                </form>
+                    <!-- ACTIONS -->
+                    <td>
 
-                                <form asp-action="Reject" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@p.Id" />
-                                    <button class="btn btn-danger action-btn">✖</button>
-                                </form>
+                        @if (p.Status == PaymentStatus.Pending)
+                        {
+                            <form asp-action="Verify" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="btn btn-warning action-btn">Verify</button>
+                            </form>
+                        }
 
-                            </td>
-                        </tr>
+                        @if (p.Status == PaymentStatus.Verified)
+                        {
+                            <form asp-action="SendToSwift" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="btn btn-primary action-btn">SWIFT</button>
+                            </form>
+                        }
 
-                        i++;
-                    }
+                        @if (p.Status == PaymentStatus.SentToSWIFT)
+                        {
+                            <form asp-action="Complete" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="btn btn-success action-btn">Complete</button>
+                            </form>
+                        }
 
-                </tbody>
+                        @if (p.Status != PaymentStatus.Completed && p.Status != PaymentStatus.Rejected)
+                        {
+                            <form asp-action="Reject" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="btn btn-danger action-btn">Reject</button>
+                            </form>
+                        }
 
-            </table>
+                    </td>
+                </tr>
 
-        </div>
+                i++;
+            }
+
+            </tbody>
+
+        </table>
 
     </div>
+
+</div>
 
 </body>
 </html>
