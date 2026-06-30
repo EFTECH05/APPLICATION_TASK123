@@ -1,19 +1,90 @@
 
 <img width="1363" height="707" alt="merr" src="https://github.com/user-attachments/assets/b4e4fb61-84e5-4c3f-95f4-0c595d1baa66" />
 
-Youtube front end  demo : https://www.youtube.com/watch?v=3KaLPcppwgc
-APPLICATION-DEVELOPMENT-SECURITY-Project APDS International Payments Portal Project Overview
+Youtube web  demo : https://www.youtube.com/watch?v=0w5iqUrRZCw&t=656s
+APPLICATION DEVELOPMENT SECURITY PROJECT
+APDS International Payments Portal
+Project Overview
 
-This repository contains the development and security implementation of an internal International Payments Portal for a bank. The project consists of two main portals:
+This is a school-based software engineering project developed as part of a group assignment focused on designing and implementing a secure international banking and payments system.
 
-Customer Portal – allows registered customers to securely log in, enter international payment details, and submit payments. Employee Portal – allows bank employees to securely log in, review customer payments, verify SWIFT codes, and submit transactions to SWIFT.
+The project simulates a real-world fintech environment where users can securely authenticate, manage accounts, and process international payments through a controlled, approval-based workflow.
 
-Security is a core focus in this project, with measures in place to prevent common web vulnerabilities and protect sensitive banking data.
+The system consists of two main portals:
 
-This is a group project developed collaboratively by our internal development team.
+Customer Portal – Allows registered customers to securely log in, complete OTP verification via Gmail, enter international payment details, and submit transactions.
+Employee Portal – Allows bank employees to securely log in, review and verify customer payments, validate SWIFT codes, and approve transactions for processing via SWIFT.
 
-Team Members Name Role / Contribution
+Security is a core focus of the system, with multiple layers of protection implemented to safeguard sensitive financial data.
 
-Ishka Sewshanker Frontend – HTML, CSS, JavaScript (Customer Portal UI) Xolisile Princess Mnyandu Frontend – HTML, CSS, JavaScript (Employee Portal UI) Franklin ngangu 3 Backend – ASP.NET Core API, Database Integration David oyowa 4 Security Implementation – Input Validation, Password Hashing, SSL Configuration Chantel Mafunise Testing & Tools – MobSF, ScoutSuite, SonarQube, CI/CD with CircleCI Mororiseng Jesicca Legodi Documentation & Video Demonstration, README, Submission Prep
+Team Members & Roles
+Ishka Sewshanker – Frontend Development (Customer Portal UI: HTML, CSS, JavaScript)
+Xolisile Princess Mnyandu – Frontend Development (Employee Portal UI: HTML, CSS, JavaScript)
+Franklin Ngangu – Backend Development (ASP.NET Core MVC, Database Integration, Security Implementation)
+David Oyowa – Security Implementation (Input Validation, Password Hashing, SSL Configuration, Secure Coding Practices)
+Chantel Mafunise – Testing & Security Tools (MobSF, ScoutSuite, SonarQube, CI/CD with CircleCI)
+Mororiseng Jessica Legodi – Documentation, Video Demonstration, README, Submission Preparation
+Features
+Customer Portal
+Secure user registration (full name, ID number, account number, password)
+Secure login system
+OTP verification sent via Gmail (Email-based Multi-Factor Authentication)
+Password hashing and salting using ASP.NET Core Identity
+Input validation using RegEx whitelisting
+Secure HTTPS/SSL communication
+Protection against:
+Session hijacking
+Clickjacking
+SQL Injection
+Cross-Site Scripting (XSS)
+Man-in-the-Middle (MITM) attacks
+DDoS attacks
+Employee Portal
+Pre-registered employee-only access (no registration system)
+Secure login with hashed and salted passwords
+Input validation using RegEx whitelisting
+Review, verify, and process customer transactions
+Validate SWIFT codes and approve payments
+Same security protections as the Customer Portal
+Security Implementation
 
-Features Customer Portal Secure user registration with full name, ID number, account number, and password. Passwords stored using hashing and salting (ASP.NET Core Identity). Input validation using RegEx whitelisting. Encrypted traffic over SSL/HTTPS. Protection against: Session hijacking Clickjacking SQL Injection Cross-Site Scripting (XSS) Man-in-the-Middle attacks DDoS attacks Employee Portal Pre-registered employees only (no registration process). Secure login with password hashing and salting. Input validation using RegEx whitelisting. Review, verify, and submit customer transactions to SWIFT. Same security measures as the Customer Portal. Tech Stack Frontend: HTML, CSS, JavaScript Backend/API: ASP.NET Core Database: SQL Server (MSSQL) Security Tools: MobSF, ScoutSuite, SonarQube, CircleCI Deployment: SSL-enabled server, tested against AWS (ScoutSuite) Security Tools MobSF – Static and dynamic mobile application security analysis. ScoutSuite – Cloud infrastructure security assessment for AWS. SonarQube – Code quality and vulnerability detection. CircleCI – CI/CD pipeline to automate builds, tests, and scans.
+The system applies secure software engineering principles, including:
+
+Password hashing and salting (ASP.NET Core Identity)
+OTP-based multi-factor authentication (Gmail email OTP)
+Role-Based Access Control (RBAC)
+Parameterized queries (SQL Injection prevention)
+Input validation using RegEx whitelisting
+Secure HTTPS/SSL communication
+Session security mechanisms
+Threat Protection Includes:
+SQL Injection prevention
+Cross-Site Scripting (XSS) protection
+Session hijacking prevention
+Clickjacking protection
+Man-in-the-Middle (MITM) attack mitigation
+DDoS attack awareness and mitigation strategies
+Tech Stack
+Frontend: HTML, CSS, JavaScript (Razor Views)
+Backend: ASP.NET Core MVC
+Database: Microsoft SQL Server (MSSQL)
+Authentication: ASP.NET Core Identity (OTP + RBAC)
+Security: Parameterized Queries + Secure Coding Practices
+Deployment: SSL-enabled environment (AWS-tested)
+Security Tools Used
+MobSF – Static and dynamic application security testing
+ScoutSuite – AWS cloud security auditing
+SonarQube – Code quality and vulnerability detection
+CircleCI – CI/CD pipeline automation
+Project Summary
+
+This project demonstrates the application of secure software engineering principles in a simulated banking system.
+
+It highlights:
+
+Full-stack development using ASP.NET Core MVC
+Secure authentication with OTP (Gmail-based MFA)
+Protection against common web vulnerabilities
+Use of parameterized queries for database security
+Role-based access control and system design
+Team collaboration in a structured software engineering project
