@@ -47,6 +47,8 @@ Review, verify, and process customer transactions
 Validate SWIFT codes and approve payments
 Same security protections as the Customer Portal
 Security Implementation
+<img width="476" height="281" alt="image" src="https://github.com/user-attachments/assets/12055588-72bd-427a-ac1d-5e68b76ebca7" />
+<img width="617" height="369" alt="image" src="https://github.com/user-attachments/assets/1c3e578f-6191-4dc2-9094-64b8e42eee8f" />
 
 The system applies secure software engineering principles, including:
 
